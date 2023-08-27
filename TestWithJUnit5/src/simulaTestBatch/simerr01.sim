@@ -1,0 +1,59 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA ERROR TEST NO 01
+%
+%  PURPOSE: ILLEGAL GOTO out of an operating Process and into the enclosing System.
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class RT_ErrorTest;
+
+RT_ErrorTest("  1 --- ILLEGAL GOTO out of an operating Process and into the enclosing System.") begin
+   text CASE=" ERROR-TEST 01";
+
+
+   procedure p;
+   begin
+      integer i;
+      Simulation begin
+         ref(Car) car1;
+      
+         Process class Car(pname); text pname;
+         begin
+            trace(pname & " is initiating");
+            while true do
+            begin
+               trace(pname & " is active 1");
+               hold (4);
+               trace(pname & " is active 2");
+               goto EXIT_LABEL;
+		    end;
+         end;
+      
+         trace("START SIMULATION");
+         car1:- new Car("Bil 1");
+         trace(car1.pname & " is scheduled for 4.0");
+         activate car1 at 4.0;
+         hold (12);
+EXIT_LABEL: outtext("At OUT"); outimage;
+      
+      end;
+   end;
+   
+   
+   facit(0):-"--- START GOTO SAMPLE";
+   facit(1):-"START SIMULATION";
+   facit(2):-"Bil 1 is scheduled for 4.0";
+   facit(3):-"Bil 1 is initiating";
+   facit(4):-"Bil 1 is active 1";
+   facit(5):-"Bil 1 is active 2";
+   facit(6):-"ExceptionHandler got error: Illegal GOTO EXIT_LABEL";
+
+   DEFEXCEPTION(ExceptionHandler);
+
+   trace("--- START GOTO SAMPLE");
+
+   p;
+   
+   trace("THIS LINE SHOULD NEVER BE EXECUTED");
+
+ end;

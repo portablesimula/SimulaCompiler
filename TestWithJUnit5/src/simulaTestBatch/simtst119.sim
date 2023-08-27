@@ -1,0 +1,27 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 119
+%
+%  PURPOSE: Use of Precompiled classes
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+external class SubSep; 
+
+SubSep(119,"--- Test Use of Precompiled classes",5) begin
+     real rrr=rr+3.14;
+     text fname;
+
+     trace("--- Start Statements of SubSep(5) begin") ; 
+     x :- new B; 
+     iA(3):=5;
+     if ICHR = 49 and IINT = 45 then
+     begin trace("OK"); end;
+     
+     fname:-filename;
+     PP;
+     trace("--- NORMAL END OF PROGRAM") ; 
+   
+  end; 
+   
+end;

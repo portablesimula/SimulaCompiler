@@ -1,0 +1,62 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 13
+%
+%  PURPOSE:     To test text value assignment and text reference assigment.
+%
+%  METHOD:      Try and fail.
+%
+%  WRITTEN BY:  BEH   11/07-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(13,"--- Test text value and text reference assigment.") begin
+
+   text t1, t2;
+
+                                                !******************************;
+   t1 :- blanks (3) ;                           ! Test text value assignment.  ;
+   t1 := "abc" ;                                !******************************;
+
+   if     t1 = "abc"
+      and t1 <> t2 then
+   else err ("*** error : Text value assignment (1). ");
+
+   t2 :- blanks (5);
+   t2 := t1;
+
+   if     t1 <> t2
+      and t2 = "abc  " then
+   else err ("*** error : Text value assignment (2). ");
+
+                                                !******************************;
+                                                ! Test text reference assigment;
+                                                !******************************;
+   t1 :- notext;
+
+   if     t1 = ""
+      and t1.main == notext
+      and t1.start = 1
+      and t1.length = 0
+      and t1.pos = 1 then
+   else err ("*** error : Text reference assignment (3). ");
+
+   t1 :- copy ("abc  ");
+
+   if     t1 = t2
+      and t1 =/= t2
+      and t1.pos = 1
+      and t1.start = 1
+      and t1.length = 5 then
+   else err ("*** error : Text reference assignment (4).");
+
+   t2 :- t1;
+
+   if     t1 = t2
+      and t1 == t2
+      and t2.start = 1
+      and t2.pos = 1
+      and t2.length = 5 then
+   else err ("*** error : Text reference assignment (5).");
+
+ end;

@@ -1,0 +1,53 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 42
+%
+%  PURPOSE:     Test an integer procedure which computes "n-fac", using
+%               iteration within the procedure.
+%
+%  WRITTEN BY:  BEH   24/07-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(42,"--- Test an integer procedure which computes ""n-fac"", using iteration within the procedure.") begin
+
+   integer i, j;
+
+   integer array res(0:7);
+
+   integer procedure Nfac(n); integer n;
+   begin
+      integer h;
+      h := 1;
+
+      while  n > 0  do
+      begin
+         h := h * n;
+         n := n - 1
+      end;
+
+      Nfac := h
+   end of procedure NFAC;
+
+ 
+   res(0) := 1;
+   res(1) := 1;
+   res(2) := 2;
+   res(3) := 6;
+   res(4) := 24;
+   res(5) := 120;
+   res(6) := 720;
+   res(7) := 5040;
+
+   for  i := 1  step  1  until  7  do
+   begin
+      j := Nfac(i);
+      if j = res(i) then else begin
+         err("*** error : Values : ");
+         outint(i, 5);
+         outint(j, 10);
+         outimage;
+      end
+   end;
+
+ end;

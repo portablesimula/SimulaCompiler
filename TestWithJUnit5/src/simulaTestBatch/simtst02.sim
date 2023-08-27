@@ -1,0 +1,122 @@
+
+% ======================================   Main   program  ===========
+%  PROGRAM NAME:  Simula a.s. - SIMULA TEST  NO 2
+%
+%  PURPOSE:  To test the boolean operators not, and, or, imp, eqv,
+%            and-then and or-else.
+%
+%  METHOD:  Use the operators in various boolean expressions.
+%
+%  WRITTEN BY:    THE  16/09-83
+%  REWRITTEN BY:  BEH  08/07-86
+% ====================================================================
+external class SimulaTest;
+
+SimulaTest(2,"--- Test Boolean operators") begin
+
+boolean            result; !To contain the result of the;
+                           ! various boolean expressions;
+boolean          b1,b2,b3; ! b1-b3 always true  ;
+boolean          b4,b5,b6; ! b4-b6 always false ;
+
+b1 := true;
+b2 := if b1 then b1 else false;
+b3 := if b2 then b1 else false;
+
+-- ******** Check that all variables have correct value.
+if not b1 then err ("*** error :  Wrong value assigned to the variable b1.");
+if not b2 then err ("*** error :  Wrong value assigned to the variable b2.");
+if not b3 then err ("*** error :  Wrong value assigned to the variable b3.");
+if b4 then err ("*** error :  Wrong value assigned to the variable b4.");
+if b5 then err ("*** error :  Wrong value assigned to the variable b5.");
+if b6 then err ("*** error :  Wrong value assigned to the variable b6.");
+
+-- ******** First test simple expressions with 'and'.
+result := b1 and b2; if not result then err ("*** error :  'and' (1).");
+result := b1 and b4; if result then err ("*** error :  'and' (2).");
+result := b6 and b3; if result then err ("*** error :  'and' (3).");
+result := b4 and b5; if result then err ("*** error :  'and' (4).");
+
+-- ********  Then try simple expressions with 'or'.
+result := b1 or b2; if not result then err ("*** error :  'or' (1).");
+result := b1 or b4; if not result then err ("*** error :  'or' (2).");
+result := b6 or b3; if not result then err ("*** error :  'or' (3).");
+result := b4 or b5; if result then err ("*** error :  'or' (4).");
+
+-- ******** Test simple expressions with 'not'.
+result := not b1; if result then err ("*** error :  'not' (1).");
+result := not b6; if not result then err ("*** error :  'not' (2).");
+
+-- ******** Test simple expressions with 'imp'.
+result := b1 imp b2; if not result then err ("*** error :  'imp' (1).");
+result := b1 imp b4; if result then err ("*** error :  'imp' (2).");
+result := b6 imp b3; if not result then err ("*** error :  'imp' (3).");
+result := b4 imp b5; if not result then err ("*** error :  'imp' (4).");
+
+-- ******** Test simple expressions with 'eqv'.
+result := b1 eqv b2; if not result then err ("*** error :  'eqv' (1).");
+result := b1 eqv b4; if result then err ("*** error :  'eqv' (2).");
+result := b6 eqv b3; if result then err ("*** error :  'eqv' (3).");
+result := b4 eqv b5; if not result then err ("*** error :  'eqv' (4).");
+
+-- ******** Test simple expressions with 'and then'.
+result := b1 and then b2; if not result then err ("*** error : 'and then' (1).");
+result := b1 and then b6; if result then err ("*** error : 'and then' (2).");
+result := b4 and then b2; if result then err ("*** error : 'and then' (3).");
+result := b5 and then b6; if result then err ("*** error : 'and then' (4).");
+
+-- ******** Test simple expressions with 'or else'.
+result := b1 or else b2; if not result then err ("*** error : 'or else' (1).");
+result := b3 or else b6; if not result then err ("*** error : 'or else' (2).");
+result := b4 or else b2; if not result then err ("*** error : 'or else' (3).");
+result := b6 or else b5; if result then err ("*** error : 'or else' (4).");
+
+-- ******** Now try some more complex expressions.
+result := b1 and b2 or b3 and b4; if not result then err ("*** error : Boolean expr. (1).");
+result := not b1 or b2;           if not result then err ("*** error : Boolean expr. (2).");
+result := not b6 and b5;          if result then err ("*** error : Boolean expr. (3).");
+result := b4 eqv b5 imp b1;       if result then err ("*** error : Boolean expr. (4).");
+result := b1 and b5 eqv b6 or b1; if result then err ("*** error : Boolean expr. (5).");
+
+                                       ! ********* NOTE 1 ***********;
+
+result := not (not (not (not (not (not (not b6))))));
+if not result then err ("*** error : Boolean expr. (6).");
+
+result := b1 imp b2 imp b3 imp b4;
+if result then err ("*** error : Boolean expr. (7).");
+
+result := (b4 and b1 eqv b5 or b6) imp b1 and not b6;
+if not result then err ("*** error : Boolean expr. (8).");
+
+result := if b1 then
+             (if b6 then
+                 b1
+              else
+                 if b1 then
+                    b6
+                 else
+                    b1)
+          else
+             b1;
+if result then err ("*** error : Boolean expr. (9).");
+
+result := if b1 then b2 else b5 and b6;
+if not result then err ("*** error : Boolean expr. (10).");
+
+result := not b1 eqv b2 and b3 imp (if if b1 then b1 else b6 then
+                                       b1 and b2 or b1 and b6 imp b2
+                                    else
+                                       b1 eqv not (b1 and b2 imp b2));
+if result then err ("*** error : Boolean expr. (11).");
+
+result := b4 or else b2 and b6;
+if result then err ("*** error : Boolean expr. (12).");
+
+result := b3 and then not b2 or else b6 imp b5;
+if not result then err ("*** error : Boolean expr. (13).");
+
+result := b2 or else not b6 imp b2 and b2 eqv not b5;
+if not result then err ("*** error : Boolean expr. (14).");
+
+end of program;

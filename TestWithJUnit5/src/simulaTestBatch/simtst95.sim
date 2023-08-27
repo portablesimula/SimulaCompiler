@@ -1,0 +1,46 @@
+
+% =============================================   Main   program =====
+%  PROGRAM NAME:   Simula a.s - SIMULA TEST NO 95
+%
+%  PURPOSE:     Test Environment Interface.
+%
+% ====================================================================
+external class SimulaTest;
+
+SimulaTest(95,"--- Test Environment Interface.") begin
+
+   integer traceCase;
+   text array facit(0:4);
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg <> facit(traceCase) then
+      begin
+         err(" Case " & edit(traceCase)); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+         err("Failed");
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+   
+   facit(0):-"BEGIN PROGRAM";
+   facit(1):-"C:/WorkSpaces/SPort-System/S-Port/src/sport/rts/temp/knwn.atr";
+   facit(2):-"C:/WorkSpaces/SPort-System/S-Port/src/sport/rts/temp/cent.atr";
+   facit(3):-"C:/WorkSpaces/SPort-System/S-Port/Attrs/FEC/PREDEF.atr";
+   facit(4):-"END PROGRAM";
+   
+   trace("BEGIN PROGRAM");
+   giveTextInfo(4,"C:/WorkSpaces/SPort-System/S-Port/src/sport/rts");
+   
+   giveTextInfo(2,"knwn"); trace(getTextInfo(12));
+   giveTextInfo(2,"cent"); trace(getTextInfo(12));
+   
+   trace(getTextInfo(19));
+   
+   trace("END PROGRAM");
+
+      
+end;

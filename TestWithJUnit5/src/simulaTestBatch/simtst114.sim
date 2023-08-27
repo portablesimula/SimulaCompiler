@@ -1,0 +1,72 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 114
+%
+%  PURPOSE: Switch Statement
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(114,"--- Test Switch Statement") begin
+   integer traceCase;
+   text array facit(0:5);
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg <> facit(traceCase) then begin
+         err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+   
+   procedure test(key,msg); integer key; text msg;
+   begin
+      integer lowKey=0;
+      integer hiKey=5;
+      integer case1=1;
+      integer case2=2;
+
+      switch(lowKey:hiKey) key
+      begin
+         when case1 do begin
+              trace(msg & " selected case 1");
+              goto BREAK;
+         end;
+
+         when case2 do begin
+              trace(msg & " selected case 2");
+              goto BREAK;
+         end;
+
+         when 3 do begin
+              trace(msg & " selected case 3");
+              goto BREAK;
+         end;
+
+         when none do begin
+              trace(msg & " selected case NONE");
+              goto NOMORE;
+         end;
+      end case;
+   BREAK: end;
+   
+   
+   facit(0):-"Test 1 selected case 2";
+   facit(1):-"Test 2 selected case 1";
+   facit(2):-"Test 3 selected case 3";
+   facit(3):-"Test 4 selected case NONE";
+   facit(4):-"In MAIN after NOMORE";
+
+   test(2,"Test 1");
+   test(1,"Test 2");
+   test(3,"Test 3");
+   test(5,"Test 4");
+   trace("Should never come here");
+NOMORE:
+   trace("In MAIN after NOMORE");
+   
+end;
+

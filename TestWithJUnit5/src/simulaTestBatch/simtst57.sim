@@ -1,0 +1,90 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 57
+%
+%  PURPOSE:     Test virtual procedure - different number of parameters in
+%               the matching procedures in two subclasses(not fo each other)
+%               of the prefix class which contains the virtual part.
+%
+%  WRITTEN BY:  BEH   01/08-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(57,"--- Test virtual procedure - different number of parameters in match ...") begin
+
+   text t;
+
+
+   class A;
+      virtual: procedure Emit;
+               procedure Dump;
+   begin
+      outtext("in A.*");
+   end;
+
+   A class AA;
+   begin
+      procedure Emit;
+      begin
+         outtext("in AA Emit.*");
+      end;
+
+      procedure Dump(rf);
+         ref(A) rf;
+      begin
+         outtext("in AA Dump.*");
+      end;
+
+      outtext("in AA.*");
+   end;
+
+   A class AB;
+   begin
+      procedure Emit;
+      begin
+         outtext("in AB Emit.*");
+      end;
+
+      procedure Dump;
+      begin
+         outtext("in AB Dump.*");
+      end;
+
+      outtext("in AB.*");
+   end;
+
+   ref(A) rA;
+
+   rA :- new AA;
+   rA.Emit;
+   rA.Dump(rA);
+
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext ;
+
+   if t = "in A.*in AA.*in AA Emit.*in AA Dump.*" then
+   else
+   begin
+      err("*** error : Wrong program execution(1).");
+      outtext("            ");
+      outtext(t); outimage;
+   end;
+
+   rA :- new AB;
+   rA.Emit;
+   rA.Dump;
+
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext ;
+
+   if t = "in A.*in AB.*in AB Emit.*in AB Dump.*" then
+   else
+   begin
+      err("*** error : Wrong program execution(2).");
+      outtext("            ");
+      outtext(t);  outimage;
+   end;
+   
+end

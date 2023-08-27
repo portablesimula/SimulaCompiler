@@ -1,0 +1,46 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 46
+%
+%  PURPOSE:     Test the qualification of a function designator.
+%
+%  WRITTEN BY:  BEH   29/07-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(46,"--- Test the qualification of a function designator.") begin
+
+   class A;
+   begin
+      integer procedure iP;
+         iP := 65;
+
+   end class A;
+
+   A class B;
+   begin
+      integer procedure iP;
+         iP := 66;
+   end class B;
+
+   ref(B) rb;
+   integer ia, ib;
+
+   ref(A) procedure rP(ra); ref(A) ra;
+      rP :- ra;
+
+   rb :- new B;
+
+   ia := rP(new A).iP;
+   ib := rP(rb).iP;
+
+   if ia = ib then else begin
+      err("*** error : Wrong qualification of function procedure.");
+      outtext("            Erroneus values : ia = ");
+      outint(ia, 3);
+      outtext("  ib = ");
+      outint(ib, 3);
+      outimage;
+   end;
+
+end;

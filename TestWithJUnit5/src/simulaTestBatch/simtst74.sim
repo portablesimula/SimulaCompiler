@@ -1,0 +1,57 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 74
+%
+%  PURPOSE:     Test resume and detach.
+%
+%  WRITTEN BY:  BEH   25/08-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(74,"--- Test resume and detach.") begin
+
+   text t;
+
+   procedure Check(c); character c;
+         outchar(c);
+
+   ref(A) x;
+   ref(B) y;
+
+   class A;
+   begin real array X(P:1); Check('A');
+         detach; Check('B');
+         detach; Check('F');
+   end;
+
+   class B;
+   begin real array X(P:1); Check('E');
+         detach; Check('G');
+         detach; Check('H');
+   end;
+
+   real procedure P;
+   begin if x=/=none then resume(x); Check('C');
+         if y=/=none then resume(y); Check('D');
+   end;
+   
+
+   x:- new A;
+   y:- new B;
+   y:- new B;
+   x:- none; x:- new A;
+   resume(y);
+
+   t:- copy(sysout.image.strip);
+   sysout.setpos(1);
+   sysout.image := notext;
+
+   if t = "CDABCDEFCGDECGDAH" then else begin
+      outtext("*** error : resume - detach.");
+      outimage;
+      outtext("            Erroneus sequencing: ");
+      outtext(t);
+      outimage; outimage
+   end;
+   
+ end

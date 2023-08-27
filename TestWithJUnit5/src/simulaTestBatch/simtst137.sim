@@ -1,0 +1,73 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 137
+%
+%  PURPOSE:     Test DirectBytefile with CREATE, APPEND and PURGE.
+%
+%  WRITTEN BY:  MYH
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(137,"--- Test DirectBytefile with CREATE, APPEND and PURGE.") begin
+
+	integer i,byte;
+	ref(Directbytefile) f1,f2;
+	
+	procedure trace(byte); integer byte; begin
+		sysout.outtext("Inbyte: "); sysout.outint(byte,0); sysout.outimage;
+	end;
+	
+	
+%	outtext("===================  PASS 1  ================"); outimage;
+	f1:-new Directbytefile("TEMP006");
+	f1.setaccess("CREATE");
+	f1.open;
+	for i:=1 step 1 until 20 do begin
+		f1.outbyte(i);
+	end;
+	f1.close;
+	
+	
+%	outtext("===================  PASS 2  ================"); outimage;
+	f2:-new Directbytefile("TEMP006");
+	f2.setaccess("APPEND");
+	f2.setaccess("SYNCHRONOUS");
+	f2.open;
+	f2.locate(f2.lastloc+1);
+	for i:=1 step 1 until 20 do begin
+		f2.outbyte(i+20); 
+	end;
+	
+%	outtext("===================  PASS 3  ================"); outimage;
+	inspect f2 do begin
+		locate(1);
+		for i:=1 step 1 until 40 do begin
+			byte := inbyte;
+			if verbose then trace(byte);
+			if byte ne i then err("Byte(" & edit(i) & ") = " & edit(byte));
+		end;
+		
+		locate(13); byte := inbyte;
+		if verbose then trace(byte);
+		if byte ne 13 then err("Byte(13) = " & edit(byte));
+		
+
+		CatchingErrors begin
+			procedure onError(message); text message; begin
+				text expected="RTS_SimulaRuntimeError: Directbytefile: outbyte failed:"
+							  " location(6) <= initial lastloc(20)"
+				              " - The file TEMP006 was opend with APPEND";
+%				sysout.outtext("ERR: " & message); sysout.outimage;
+%				sysout.outtext("EXP: " & expected); sysout.outimage;
+				if message ne expected then err("Got wrong message: " & message);
+				goto E;
+			end;
+			locate(6); outbyte(99); outimage;
+			err("The program was never supposed to get here");
+		end;
+		
+	 E: setaccess("PURGE");
+		close;
+	end;
+	
+end

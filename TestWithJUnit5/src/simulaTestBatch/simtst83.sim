@@ -1,0 +1,95 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM name:   Simula a.s. - SIMULA TEST NO 83
+%
+%  PURPOSE:     name Parameter with EXTREME BI-EFFECTS
+%
+%  WRITTEN BY:  MYH   29/07-2018
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(83,"--- Test name Parameter with EXTREME BI-EFFECTS") begin
+
+   ! --------------------------------------------------------- ;
+   ! -- name Parameter with EXTREME BI-EFFECTS              -- ;
+   ! --------------------------------------------------------- ;
+
+   if verbose then begin
+   outtext("--- START Simula a.s. TEST 83"); outimage ;
+   outtext("--- Test of formal parameters."); outimage ; outimage ;
+   end;
+
+   begin comment *** PART 1 ***;
+      integer i,j;
+      ref(A) array rA(0:2);
+   
+      class A;
+      begin integer n; n:=5;
+            rA(i):-this A; i:=i+1;
+      end;
+
+      procedure P(y); name y; ref(A) y;
+      begin
+         comment EG: rA(0).n := rA(1).n + 3   ;
+         y.n:=y.n+3;
+      end;
+   
+      P(new A);
+   
+      if rA(0).n = 8 and rA(1).n = 5 then -- OK
+      else begin
+         err(" ERROR IN PART 1");
+         for j:=0 step 1 until i do begin
+            outtext("Object "); outint(j,0);
+            if rA(j) =/= none then
+            begin outtext(" -- n="); outint(rA(j).n,0); end
+            else outtext(" -- NULL");
+            outimage;
+         end;
+      end;
+   end;
+   
+   begin comment *** PART 2 ***;
+      ref(A) x,v;
+
+      class A;
+      begin integer i;
+         ref(A) procedure Z;
+         begin if verbose then begin outtext("Call Z"); outimage; end;
+               P(x);
+               Z:- v:- new A;
+         end;
+   
+      end;
+   
+      procedure P(y); name y; ref(A) y;
+      begin
+         Q(y.i)
+      end;
+
+      procedure Q(ii); name ii; integer ii;
+      begin
+         ii:=ii+2
+         if verbose then
+         begin outtext("INC: x.i,v.i=");
+            if x =/= none then outint(x.i,3) else outtext("x==NONE ");
+            if v =/= none then outint(v.i,3); outimage;
+         end;   
+      end;
+   
+      x:-new A;
+      P(x.Z);
+   
+%     P(x);
+   
+      if verbose then
+      begin outtext("end  x.i="); outint(x.i,0); outimage;
+            outtext("end  v.i="); outint(v.i,0); outimage;
+      end;
+            
+      if x.i=4 and v.i = 2 then -- OK
+      else err(" ERROR IN PART 2");
+   end;
+   
+   
+end;      

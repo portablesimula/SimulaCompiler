@@ -1,0 +1,73 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 87
+%
+%  PURPOSE:     Test Specification of Virtual Procedures.
+%
+%  WRITTEN BY:  MYH  13/06-2018
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(87,"--- Test Specification of Virtual Procedures.") begin
+
+   integer pval;
+   ref(A) ra;
+   ref(B) rb;
+   ref(File) test;
+   
+   procedure checkPval(n,val); integer n,val;
+   begin if pval = val then
+     else
+     begin
+         outtext("*** error in test "); outint(n,0); outtext(": Test Specification of Virtual Procedures."); outimage;
+         outtext("            Erroneus values: val = "); outint(pval, 0); outimage;
+         outtext("            --------- Facit: val = "); outint(val, 0); outimage;
+         err("Failed");
+     end;
+   end;
+
+   class A; virtual: ref(File) procedure myFile is ref(File) procedure actual(i,j); integer i,j;;
+                     procedure virt2 is procedure act2(j); integer j;;
+                     integer procedure virt3 is procedure act3;;
+                     procedure virt4 is procedure act4;;
+   begin integer i;
+     ref(File) procedure myFile(i,j); integer i,j;
+     begin pval:=i+j; end;
+     
+     integer procedure pA;
+     begin 
+        ref(File) f;
+        f :- myFile(4,3);
+        pA := pval;
+     end;
+   end;
+
+   A class B;
+   begin integer i;
+     ref(File) procedure myFile(i,j); integer i,j;
+     begin pval:=2*i+j; end;
+     procedure virt4;
+     begin pval:=4567; end;
+     
+     integer procedure pB;
+     begin 
+        ref(File) f;
+        f :- myFile(14,13);
+        pB := pval;
+     end;
+   end;
+   
+   ra :- new A;
+   rb :- new B;
+  
+   test :- ra.myFile(7,21);
+   checkPval(1,7+21);
+  
+   test :- rb.myFile(17,210);
+   checkPval(2,2*17+210);
+   
+   rb.virt4;
+   checkPval(3,4567);
+  
+   
+end;

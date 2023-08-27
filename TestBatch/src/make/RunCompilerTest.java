@@ -8,10 +8,13 @@
 package make;
 
 import java.io.File;
+import java.io.IOException;
+
 import simula.compiler.Simula;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.compiler.utilities.Util;
 
 /**
  * Run inline compiler tests.
@@ -311,7 +314,7 @@ public final class RunCompilerTest {
 			Simula.setSelectors("ZD");
 
 		SimulaCompiler compiler = new SimulaCompiler(fileName);
-		compiler.doCompile();
+		try { compiler.doCompile(); } catch (IOException e) { Util.IERR("Compiler Error: ", e); }
 	}
 
 

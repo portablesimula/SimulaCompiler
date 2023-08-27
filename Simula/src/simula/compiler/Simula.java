@@ -8,6 +8,7 @@
 package simula.compiler;
 
 import java.io.File;
+import java.io.IOException;
 
 import simula.compiler.parsing.SimulaScanner;
 import simula.compiler.utilities.Global;
@@ -145,7 +146,11 @@ public final class Simula {
 			editor.setVisible(true);
 		} else {
 			// *** STARTING SIMULA COMPILER ***
-			new SimulaCompiler(fileName).doCompile();
+			try {
+				new SimulaCompiler(fileName).doCompile();
+			} catch (IOException e) {
+				Util.IERR("Compiler Error: ", e);
+			}
 		}
 	}
 

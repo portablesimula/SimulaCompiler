@@ -1,0 +1,268 @@
+
+% =====================================   Main   program =============
+%  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 28
+%
+%  PURPOSE:       Test paramenter transmission to procedures by value.
+%
+%  NOTE:          The format of reals and long reals in your
+%                 implementation must be reflected in the texts.
+%
+%  REWRITTEN BY:  BEH   18/07-86
+% ====================================================================
+external class SimulaTest;
+
+SimulaTest(28,"--- Test paramenter transmission to procedures by value.") begin
+
+   boolean       array ba1 (0:2), ba3 (0:2, 0:1, 0:2);
+   character     array ca1 (0:2), ca3 (0:2, 0:1, 0:2);
+   short integer array sa1 (0:2), sa3 (0:2, 0:1, 0:2);
+   integer       array ia1 (0:2), ia3 (0:2, 0:1, 0:2);
+   real          array ra1 (0:2), ra3 (0:2, 0:1, 0:2);
+   long real     array la1 (0:2), la3 (0:2, 0:1, 0:2);
+   text          array ta1 (0:2), ta3 (0:2, 0:1, 0:2); ! not by value;
+
+   integer         i, subscr1, subscr2, subscr3, sum;
+   text            t, checkline, txt;
+   boolean         b;
+   character       c;
+   short integer   s;
+   real            r;
+   long real       l;
+
+
+   procedure Pr1 (b, c, s, i, r, l, t);   value t;
+                                   boolean       b;
+                                   character     c;
+                                   short integer s;
+                                   integer       i;
+                                   real          r;
+                                   long real     l;
+                                   text          t;
+      begin
+      sysout.image:= notext;
+      sysout.setpos (1);
+
+      if b then outtext ("true ") else outtext ("false ");
+      outchar (c);
+      outint (s, 4);
+      outint (i, 4);
+      outreal (r, 5, 12);
+      outreal (l, 5, 12);
+      outchar (' ');
+      outtext (t);
+      end of procedure Pr1;
+
+
+   if verbose then begin
+   outtext ("--- START Simula a.s. TEST 28");
+   outimage;
+   outtext ("--- Test parameter transmission of value types and");
+   outimage;
+   outtext ("--- text, and arrays of these types to procedures by");
+   outimage;
+   outtext ("--- value (except text array).");
+   outimage; outimage;
+   end;
+
+   Pr1 (true, 'X', 99, 123, 100.1, 200.2&-5, "PRDL TO YOU TOO.");
+
+   if sysout.image.strip =
+       "true X  99 123  1.0010&+02 2.0020&-003 PRDL TO YOU TOO." then    
+   else
+   begin
+      outimage;
+      err("Call with constants as actual");
+      outtext (" parameters (1).");
+      outimage; outimage;
+      
+   end;
+
+
+   Pr1 (false, 'Y', 2.4555, 1.45&+1, 2976555, 4481,
+       "ABRACADADRA (MISSPELT).");
+
+   if sysout.image.strip =
+     "false Y   2  15  2.9766&+06 4.4810&+003 ABRACADADRA (MISSPELT)."
+%     false Y   2  14  2.9766&+06 4.4810&+003 ABRACADADRA (MISSPELT).     
+   then else
+   begin
+      outimage;
+      err("Call with constants with type conversion");
+      outimage;
+      outtext ("            as actual parameters (2).");
+      outimage; outimage;
+      
+   end;
+
+   b:= true;
+   c:= '*';
+   s:= 12;
+   i:= 943;
+   r:= 2.29;
+   l:= 0.02&-11;
+   t:- copy ("OKEYDOKE.");
+
+   Pr1 (b, c, s, i, r, l, t);
+
+   if sysout.image.strip =
+            "true *  12 943  2.2900&+00 2.0000&-013 OKEYDOKE." then
+   else
+   begin
+      outimage;
+      err("Call with simple variables as actual ");
+      outimage;
+      outtext ("            parameters (3).");
+      outimage; outimage;
+      
+   end;
+
+   Pr1 (b, c, l, r, i, s, t);
+
+   if sysout.image.strip =
+      "true *   0   2  9.4300&+02 1.2000&+001 OKEYDOKE."
+   then else
+   begin
+      outimage;
+      err("Call with simple variables with type");
+      outimage;
+      outtext ("            conversion as actual parameters (4).");
+      outimage; outimage;
+      
+   end;
+
+
+   Pr1 (b, c, r, l, s, i, t);
+
+   if sysout.image.strip =
+            "true *   2   0  1.2000&+01 9.4300&+002 OKEYDOKE." then
+   else
+   begin
+      outimage;
+      err("Call with simple variables with type");
+      outimage;
+      outtext ("            conversion as actual parameters (5).");
+      outimage; outimage;
+      
+   end;
+
+
+   Pr1 (if b then not b else b,
+        if true then (if not b then 'N' else
+                      if b then 'Q' else 'N') else ('N'),
+        if b then s**3 else 2**s,
+        if not b then 2.873 else 299,
+        i/s* (if b then s else 0.0),
+        l*i,
+        if not ( not b) then t.sub (1, s/2) else notext);
+
+
+   if sysout.image.strip =
+              "false Q1728 299  9.4300&+02 1.8860&-010 OKEYDO" then
+%              false Q1728 299  9.3600&+02 1.8860&-010 OKEYDO
+   else
+   begin
+      outimage;
+      err("Call with expressions as actual");
+      outtext (" parameters (6).");
+      outimage; outimage;
+      
+   end;
+
+
+   Pr1 (ln (i)*i>- (if i = 0 then 0 else i*i/r) and not letter (c),
+        if digit (c) then 'D' else 'L',
+        i + r*100/4,
+        - (if b then s/12 else ((i/943)+1)),
+       (r**2)/2,
+       l*1&20,
+       t.strip );
+
+   begin text tst;
+   tst:-copy(sysout.image.strip);
+   if sysout.image.strip =
+            "true L1000  -1  2.6220&+00 2.0000&+007 OKEYDOKE." then
+   else
+   begin
+      outimage;
+      err("Call with expressions as actual");
+      outtext (" parameters (7)."); outimage;
+      outtext("Test: "); outtext(tst);
+      outimage; outimage;
+      
+   end;
+   end;
+
+                                     ! Now try value type arrays   ;
+                                     ! by value.                   ;
+                                     ! First initialise arrays     ;
+
+   while  subscr1 <= 2  do
+      begin
+      ba1 (subscr1):= if subscr1>0 then not ba1 (subscr1-1) else true;
+      ca1 (subscr1):= '*';
+      sa1 (subscr1):= subscr1;
+      ia1 (subscr1):= subscr1;
+      ra1 (subscr1):= subscr1;
+      la1 (subscr1):= subscr1;
+      txt:- copy (" (  )");
+      txt.sub (2, 2).putint (subscr1);
+      ta1 (subscr1):- txt;
+      subscr2:= 0;
+
+      while  subscr2 <= 1  do
+         begin
+         subscr3:= 0;
+
+         while  subscr3 <= 2  do
+            begin
+            sum:= subscr1 + subscr2 + subscr3;
+            ba3 (subscr1, subscr2, subscr3):=
+                            subscr1 > subscr2 and subscr1 < subscr3;
+            ca3 (subscr1, subscr2, subscr3):= '/';
+            sa3 (subscr1, subscr2, subscr3):= sum;
+            ia3 (subscr1, subscr2, subscr3):= sum;
+            ra3 (subscr1, subscr2, subscr3):= sum;
+            la3 (subscr1, subscr2, subscr3):= sum;
+            txt:- copy ("(  ,  ,  )");
+            txt.sub (2, 2).putint (subscr1);
+            txt.sub (5, 2).putint (subscr2);
+            txt.sub (8, 2).putint (subscr3);
+            ta3 (subscr1, subscr2, subscr3):- txt;
+            subscr3:= subscr3+1
+            end;
+
+         subscr2:= subscr2+1
+         end;
+      subscr1:= subscr1+1
+      end;
+
+                                     ! First try calling Pr1 with ;
+                                     ! some subscripted variables ;
+
+   Pr1 (if ba1 (i-i) then ba1 (r+2-r) else ba1 (l+1-l),
+        if ba3 (1, s-s, r+l+i-r-l-i) then ca1 (l*i) else ca1 (i/i),
+        sa1 (l),
+        la1 (ra1 (ia1(sa3((r+r)/(2*r),
+             la1 (ra1 (ia1 (r-r))), la3 (0, l, 1))))),
+        ia3 (if ba1(r-r) eqv ba1(i-i) then r else (0),
+             ia1(i/i*i/i-1), sa1 (l)),
+        sa1 (l+sa1(l+sa1(l+sa1(l+sa1(l+sa1(l+sa1(sa1(l)+l))))))),
+        ta3 (i+s+r+sa1 (l)-r-s-i, ra1 (l)+ (s/s), -1+s/ (2**2)));
+
+   if sysout.image.strip =
+            "true *   0   2  2.0000&+00 0.0000&+000 ( 0, 1, 2)" then
+   else
+   begin
+      outimage;
+      err("Call with subscribted variables as actual");
+      outimage;
+      outtext ("            parameters (8).");
+      outimage; outimage;
+      
+   end;
+
+
+   sysout.setpos (1);
+   sysout.image:= notext;
+
+end;

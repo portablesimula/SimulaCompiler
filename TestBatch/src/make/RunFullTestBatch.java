@@ -8,11 +8,13 @@
 package make;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.compiler.utilities.Util;
 
 /**
  * Simula Test Batch donated by Simula as.
@@ -229,7 +231,7 @@ public final class RunFullTestBatch {
 			String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
 			Option.RUNTIME_USER_DIR=new File(fileName).getParent();
 			SimulaCompiler compiler = new SimulaCompiler(fileName);
-			compiler.doCompile();
+			try { compiler.doCompile(); } catch (IOException e) { Util.IERR("Compiler Error: ", e); }
 		}
 		System.out.println("--- END OF SIMULA TESTBATCH");
 		long timeUsed  = System.currentTimeMillis( ) - startTimeMs;

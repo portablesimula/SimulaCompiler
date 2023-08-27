@@ -1,0 +1,48 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 128
+%
+%  PURPOSE: The new standard procedures  edit and edfix
+%
+%  WRITTEN BY:  MYH 
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(128,"--- Test the new standard procedures  edit and edfix") begin
+   integer traceCase;
+   text array facit(0:5);
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg ne facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+   
+   procedure test; begin
+      character c; integer i; real r; long real lr; boolean b;
+      i:=5678234;
+      c:='B';
+      r:=3.14&-15;
+      lr:=3.1415&&20;
+      trace("TEST1 " & edit(true) & " " & edit(i) & " " & edit(c) & " " & edit(r) & " " & edit(lr)& " " & edit(b));
+      lr:=5.23645;
+      trace("TEST2 " & edfix(lr,0) & " " & edfix(lr,1) & " " & edfix(lr,2) & " " & edfix(lr,3));
+      r:=175.46;
+      trace("TEST3 " & edfix(r,0) & " " & edfix(r,1) & " " & edfix(r,2) & " " & edfix(r,3));
+   end;
+   
+   
+   facit(0):-"TEST1 true 5678234 B 3.14&-15 3.1415&&20 false";
+   facit(1):-"TEST2 5 5.2 5.24 5.236";
+   facit(2):-"TEST3 175 175.5 175.46 175.460";
+   facit(3):-"Portable Simula-2.0!!!Windows 10.��ystein!!!Windows 10!!!amd64!!!��ystein!!!simtst128!!!��ystein!!!simtst128";
+
+   test;
+   
+   trace(simulaid);
+   
+end;

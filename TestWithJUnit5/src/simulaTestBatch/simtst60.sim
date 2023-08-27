@@ -1,0 +1,47 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 60
+%
+%  PURPOSE:     Test visibility of protected attributes.
+%
+%  WRITTEN BY:  BEH   04/08-86,  MYH  27/05-2018
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(60,"--- Test visibility of protected attributes.") begin
+
+   procedure check(expectedVai,expextedVbi,msg); integer expectedVai,expextedVbi; text msg; 
+   begin
+      if xb.vai = expectedVai and xb.vbi = expextedVbi then
+      else
+      begin
+         err(" in " & msg & ": Visibility of protected attribute.");
+         outtext("            Erroneus values : vai = "); outint(xb.vai, 4); outimage;
+         outtext("                              vbi = "); outint(xb.vbi, 4); outimage;
+      end;
+   end;
+
+   class A;
+   begin integer i;
+         integer procedure vai; vai := i;
+   end;
+
+   A class B; protected i;
+   begin integer i;
+         integer procedure vbi; vbi := i;
+         procedure p; xb.i := 17;
+   end;
+
+   ref(B) xb;
+
+   xb :- new B;
+   xb.p;
+   check(0,17,"Test 1");
+   
+   xb.i := 5;
+   check(5,17,"Test 2");
+   
+   inspect xb do i := 7;
+   check(7,17,"Test 3");
+
+end;

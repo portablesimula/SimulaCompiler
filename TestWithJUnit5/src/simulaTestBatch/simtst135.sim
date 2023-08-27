@@ -1,0 +1,49 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 135
+%
+%  PURPOSE:     Test Outbytefile with CREATE, APPEND and PURGE.
+%
+%  WRITTEN BY:  MYH
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(135,"--- Test Outbytefile with CREATE, APPEND and PURGE.") begin
+
+	integer i,byte;
+	ref(Outbytefile) f1,f2;
+	
+	procedure trace(byte); integer byte; begin
+		sysout.outtext("Inbyte: "); sysout.outint(byte,0); sysout.outimage;
+	end;
+	
+	
+%	outtext("===================  PASS 1  ================"); outimage;
+	f1:-new Outbytefile("TEMP004");
+	f1.setaccess("CREATE");
+	f1.open;
+	for i:=1 step 1 until 20 do begin
+		f1.outbyte(i);
+	end;
+	f1.close;
+	
+	
+%	outtext("===================  PASS 2  ================"); outimage;
+	f2:-new Outbytefile("TEMP004");
+	f2.setaccess("APPEND");
+	f2.open;
+	for i:=1 step 1 until 20 do begin
+		f2.outbyte(i+20); 
+	end;
+	
+%	outtext("===================  PASS 3  ================"); outimage;
+	inspect new Inbytefile("TEMP004") do begin
+		open;
+		for i:=1 step 1 until 40 do begin
+			byte := inbyte;
+			if verbose then trace(byte);
+			if byte ne i then err("Byte(" & edit(i) & ") = " & edit(byte));
+		end;
+		close;
+	end;	
+end

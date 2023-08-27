@@ -15,6 +15,7 @@ import java.awt.event.InputEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
@@ -566,7 +567,9 @@ public class EditorMenues extends JMenuBar {
 			if(file!=null) Option.RUNTIME_USER_DIR=Global.currentWorkspace.toString();
 			new Thread(new Runnable() {
 				public void run() {
-					new SimulaCompiler(name,reader).doCompile();
+					try { new SimulaCompiler(name,reader).doCompile(); }
+					catch (IOException e) { Util.IERR("Compiler Error: ", e); }
+
 				}}).start();
 		} catch(Exception e) { Util.popUpError("Can't run: "+e);}
 	}

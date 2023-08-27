@@ -1,0 +1,106 @@
+external class SimulaTest;
+
+SimulaTest class MainSeparat(i); integer i; virtual: switch EXIT;
+begin
+   boolean TESTING=true;
+   integer traceCase;
+   text array facit(0:14);
+
+   integer IINT=45;
+   integer IREA=IINT+1;
+   character cc='a';
+   text ttt="Abracadabra";
+   boolean bb=true;
+   real rr=IINT+sqrt(4);
+   
+   text t; 
+   integer nA,nB; integer array iA(1:6);
+   ref(A) x; 
+   ref(B) y; 
+
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if TESTING then
+      begin
+         if msg <> facit(traceCase) then
+         begin err("Case " & edit(traceCase));
+            outtext("Trace: " & msg); outimage;
+            outtext("Facit: " & facit(traceCase)); outimage;
+         end;
+         traceCase:=traceCase+1;
+      end;
+   end;
+    
+   text procedure edIdent(id,n); character id; integer n; 
+   begin text t; t:-copy("(Xn)"); 
+         t.sub(2,1).putchar(id); 
+         t.sub(3,1).putchar(char(rank('0')+n)); 
+         edIdent:-t; 
+   end; 
+  
+  Infile class MyInfile; virtual: ref(File) procedure pvirt is ref(File) procedure actual(i,j); integer i,j;; 
+  begin 
+     ref(File) procedure pvirt(i,j); integer i,j; 
+     begin i:=34; 
+     end; 
+     integer procedure inRom; 
+     begin  
+        ref(File) myFile; 
+        myFile :- pvirt(4,3); 
+     end; 
+  end; 
+ 
+   class A; 
+   begin real array X(P:1); 
+         integer ord; 
+         text procedure idA; begin idA:-edIdent('A',ord); end; 
+         ord:=nA:=nA+1; 
+         trace("Event A-1: " & idA); 
+   end; 
+ 
+   A class B; 
+   begin real array X(P:1); 
+         integer ord; 
+         text procedure idB; begin idB:-edIdent('B',ord); end; 
+         ord:=nB:=nB+1; 
+         trace("Event B-1: " & idB); 
+   end; 
+ 
+   real procedure P; 
+   begin  
+         trace("In procedure P");           
+   end; 
+
+   if i=5 then
+   begin
+      if verbose then begin
+         outtext("--- START SIMULA TEST 119"); outimage ;
+         outtext("--- Use of Precompiled classes");
+         outimage; outimage;
+      end;
+   
+      facit(0):-"--- Start Statements of class MainSeparat";                                                                                           
+      facit(1):-"--- Start Statements of class SubSep";                                                                                                
+      facit(2):-"In procedure P";                                                                                                                      
+      facit(3):-"In procedure P";                                                                                                                      
+      facit(4):-"Event A-1: (A1)";                                                                                                                     
+      facit(5):-"Event B-1: (B1)";                                                                                                                     
+      facit(6):-"--- Start Statements of SubSep(5) begin";                                                                                             
+      facit(7):-"In procedure P";                                                                                                                      
+      facit(8):-"In procedure P";                                                                                                                      
+      facit(9):-"Event A-1: (A2)";                                                                                                                     
+      facit(10):-"Event B-1: (B2)";                                                                                                                     
+      facit(11):-"OK";                                                                                                                                  
+      facit(12):-"--- NORMAL END OF PROGRAM";                                                                                               
+   end
+   else if i=15 then
+   begin
+      facit(0):-"--- Start Statements of class MainSeparat";                                                                                           
+      facit(1):-"--- Start Statements of class SubSep2";                                                                                                
+   end;
+    
+   trace("--- Start Statements of class MainSeparat") ; 
+   nA:=0; nB:=0; 
+ 
+end;

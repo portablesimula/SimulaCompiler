@@ -1,0 +1,74 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 77
+%
+%  PURPOSE:     Test infile using two infile objects reading from the same
+%               external file.
+%
+%  WRITTEN BY:  BEH   26/08-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(77,"--- Test infile using two infile objects reading from the same external file.") begin
+   
+   text fileName="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/any77";
+
+   class Read(n, other); integer n; ref(Read) other;
+   begin text array linjer(1:300);
+         integer lnr, i;
+         ref(Infile) fil;
+
+         procedure Sammenlign;
+         begin boolean procedure OK(i); integer i;
+                     OK:= if i<=lnr and i<=other.lnr then
+                               linjer(i) = other.linjer(i)
+                          else false;
+
+               for i:= 1, i+1 while i<=lnr, i+1 while i<=other.lnr do
+               if not OK(i) then begin
+                  err(" NOTE : Did not work.");
+                  outimage;
+                  outtext("       Records read from file:");
+                  outimage;
+                  for i:= 1, i+1 while i<=lnr, i+1 while i<=other.lnr do
+                  begin setpos(5);
+                        if i<=lnr then outtext(linjer(i));
+                        setpos(40);
+                        if i<=other.lnr then outtext(other.linjer(i));
+                        outimage
+                  end;
+                  outimage
+               end
+         end pros. sammenlign;
+
+         if other =/= none then
+               other.other :- this Read;
+
+         detach;
+
+
+         fil :- new Infile(fileName);
+         if not fil.open(blanks(30)) then
+                error("Can't open Infile: " & fileName);
+         fil.inrecord;
+
+         while not fil.endfile do
+         begin i:= n+1;
+               for i:= i-1 while not fil.endfile and i>0 and lnr<301 do
+               begin lnr:= lnr+1; linjer(lnr):- copy(fil.image);
+                     fil.inrecord
+               end;
+               resume(other)
+         end;
+
+         while not other.fil.endfile do resume(other);
+
+         fil.close; other.fil.close;
+         Sammenlign;
+   end;
+
+
+   resume(new Read(3, new Read(7, none)));
+
+   
+ end

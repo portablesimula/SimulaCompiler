@@ -1,0 +1,63 @@
+ 
+class RT_ErrorTest(title); text title;
+	hidden protected found_error;
+begin
+
+   integer traceCase;
+   text array facit(0:100);
+
+	boolean found_error;
+--	integer nFailed;
+	boolean verbose;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg <> facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; --nFailed:=nFailed+1;
+	end;
+
+    procedure ExceptionHandler(ErrorText); text ErrorText;
+    begin
+--       text CASE=" ERROR-TEST 01";
+       trace("ExceptionHandler got error: " & ErrorText);
+       if found_error then
+            outtext("GOT ERROR(S) IN" & fullTitle)
+       else outtext ("--- NO ERRORS FOUND IN" & fullTitle);
+
+       if verbose then begin
+          outimage;
+          outtext ("--- END " & fullTitle) ;
+          outimage;
+       end;
+       terminate_program;
+    end;
+
+    text fullTitle=" Simula RT_Error TEST" & title;
+	if verbose then begin
+		outtext ("--- START " & fullTitle); outimage; outimage;
+	end;
+	
+	inner;
+	
+   if found_error then
+       outtext("GOT ERROR(S) IN" & fullTitle)
+   else outtext ("--- NO ERRORS FOUND IN" & fullTitle);
+
+   if verbose then begin
+       outimage;
+       outtext ("--- END SIMULA" & fullTitle) ;
+       outimage;
+   end;
+	
+end;

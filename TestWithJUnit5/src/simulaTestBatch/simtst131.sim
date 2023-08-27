@@ -1,0 +1,70 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 131
+%
+%  PURPOSE: CATCHING ERRORS
+%
+%  WRITTEN BY:  MYH   2/9-2021
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(131,"--- Test new standard procedure 'CatchingErrors'") begin
+
+CatchingErrors begin
+    integer traceCase;
+    text array facit(0:9);
+    ref(Inbytefile) bf;
+
+    procedure onError(message); text message; begin
+        trace("Inside onError: " & message);
+        goto LAB2;
+    end;
+   
+    procedure trace(msg); text msg;
+    begin
+        if verbose then begin outtext(msg); outimage; end;
+        if msg <> facit(traceCase) then
+        begin err("Case " & edit(traceCase));
+            outtext("Trace: " & msg); outimage;
+            outtext("Facit: " & facit(traceCase)); outimage;
+        end;
+        traceCase:=traceCase+1;
+    end;
+
+    procedure P; begin
+        procedure Q; begin
+            integer i;
+            
+            CatchingErrors begin
+                procedure onError(message); text message; begin
+                    trace("DEEP Inside onError: " & message);
+                    goto LAB4;
+                end;
+                bf.inbyte;
+            end;
+        end;
+        Q;
+    end;
+   
+   
+   facit(0):-"At START";
+   facit(1):-"Inside onError: NullPointerException: NONE-CHECK Failed";
+   facit(2):-"At LAB2";
+   facit(3):-"DEEP Inside onError: NullPointerException: NONE-CHECK Failed";
+   facit(4):-"At LAB4";
+   facit(5):-"At END OF TEST";
+   
+STARTING: trace("At START");
+
+    bf.inbyte; -- Producing error NONE CHECK FAILED
+   
+LAB1:trace("At LAB1");
+LAB2:trace("At LAB2");
+
+    P;
+
+LAB3:trace("At LAB3");
+LAB4:trace("At LAB4");
+   
+   trace("At END OF TEST");
+      
+end;

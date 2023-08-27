@@ -1,0 +1,58 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 109
+%
+%  PURPOSE: Simple Co-Routine Sample 2: detach - resume
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(109,"--- Simple Co-Routine Sample 2: detach - resume") begin
+   integer traceCase;
+   text array facit(0:6);
+   ref(A) x;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg <> facit(traceCase) then
+      begin
+         err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+   
+   class A;
+   begin
+      integer i;
+      trace("A: State 1(Initiating)");
+      detach;     
+      trace("A: State 2");
+      detach;
+      trace("A: State 3(Terminating)");
+   end A;
+   
+   
+   facit(0):-"Main: Before new A";
+   facit(1):-"A: State 1(Initiating)";
+   facit(2):-"Main: Before first resume";
+   facit(3):-"A: State 2";
+   facit(4):-"Main: Before second resume";
+   facit(5):-"A: State 3(Terminating)";
+   facit(6):-"Main: Before third resume";
+   
+   begin
+      trace("Main: Before new A");
+      x:-new A;
+      trace("Main: Before first resume");
+      resume(x);
+      trace("Main: Before second resume");
+      resume(x);
+      trace("Main: Before third resume");
+      !resume(x); !Will cause ERROR: Resume(x): x is not in detached state.
+   end subBlock;
+   
+   
+end program;

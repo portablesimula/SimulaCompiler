@@ -1,0 +1,71 @@
+% ----------------------------------------------------------------
+% LEGAL GOTO out of an operating Process and the enclosing System.
+% ----------------------------------------------------------------
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 121
+%
+%  PURPOSE: LEGAL GOTO out of an operating Process and the enclosing System.
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(121,"--- Test LEGAL GOTO out of an operating Process and the enclosing System.") begin
+   integer traceCase;
+   text array facit(0:9);
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg <> facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+   procedure p;
+   begin
+      integer i;
+      Simulation begin
+         ref(Car) car1;
+      
+         Process class Car(pname); text pname;
+         begin
+            trace(pname & " is initiating");
+            while true do
+            begin
+               trace(pname & " is active 1");
+               hold (4);
+               trace(pname & " is active 2");
+               goto EXIT_LABEL;
+		    end;
+         end;
+      
+         trace("START SIMULATION");
+         car1:- new Car("Bil 1");
+         trace(car1.pname & " is scheduled for 4.0");
+         activate car1 at 4.0;
+         hold (12);
+      
+      end;
+   end;
+   
+
+
+   facit(0):-"--- START GOTO SAMPLE";
+   facit(1):-"START SIMULATION";
+   facit(2):-"Bil 1 is scheduled for 4.0";
+   facit(3):-"Bil 1 is initiating";
+   facit(4):-"Bil 1 is active 1";
+   facit(5):-"Bil 1 is active 2";
+   facit(6):-"At END OF TEST";
+
+   trace("--- START GOTO SAMPLE");
+   p;
+   trace("THIS LINE SHOULD NEVER BE EXECUTED");
+   EXIT_LABEL: trace("At END OF TEST");
+      
+end;

@@ -1,0 +1,53 @@
+
+% ======================================   Main   program  ===========
+%  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 1
+%
+%  PURPOSE:  Test path selection in conditional statements, using only
+%            simple Boolean expressions(true / false).
+%
+%  METHOD:  Try and fail.
+%
+%  WRITTEN BY:  THE  16/09-83
+% ====================================================================
+external class SimulaTest;
+
+SimulaTest(1,"--- Simple test of conditional statements") begin
+
+if true then else error("*** error: (1)");
+if false then error("*** error: (2)");
+if false then error("*** error: (3)") else;
+
+if true then begin
+   if true then begin
+      if true then begin
+         if false then error("*** error: (4)");
+      end
+      else error("*** error: (5)");
+   end
+   else error("*** error: (6)");
+end
+else 
+   error("*** error: (7)");
+;
+
+     if false then error("*** error: (8)")
+else if true then begin
+        if false then error("*** error: (9)");
+     end
+else error("*** error: (10)");
+;
+
+if if if true then false else true then true else false then 
+   error("*** error: (11)");
+;
+
+if if true then
+     (if true then true else false)
+   else
+      if false then true else false
+then
+else error("*** error: (12)");
+;
+
+error("JUST FOR TEST");
+end of program;

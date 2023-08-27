@@ -1,0 +1,69 @@
+
+external class SimulaTest;
+
+SimulaTest(59,"--- Test 2-dim Array by value.") begin
+
+   procedure fillArray(RA,v1); integer array RA; integer v1;
+   begin integer i,j;
+      for i:=lowerbound(RA,1) step 1 until upperbound(RA,1) do
+      for j:=lowerbound(RA,2) step 1 until upperbound(RA,2) do
+      begin
+         RA(i,j):=v1; v1:=v1+1;
+      end;
+   end;
+
+   procedure checkArray(msg,RA,v1); text msg; integer array RA; integer v1;
+   begin integer i,j;
+      for i:=lowerbound(RA,1) step 1 until upperbound(RA,1) do
+      for j:=lowerbound(RA,2) step 1 until upperbound(RA,2) do
+      begin
+         if RA(i,j) ne v1 then
+         begin
+            err("Check Array failed");
+            if verbose then
+            begin
+               outtext("*** ERROR " & msg & " at index "); outint(i,0); outchar(','); outint(j,0);
+               outtext(", RA="); outint(RA(i,j),0);
+               outtext(", Facit="); outint(v1,0);
+               outimage;
+            end;
+         end;
+         v1:=v1+1;
+      end;
+   end;
+
+   class A; virtual: procedure P;
+   begin 
+      procedure P(FA); value FA; integer array FA;
+      begin
+         fillArray(FA,654);
+      end;
+   end;
+   
+   A class B(PA); value PA; integer array PA;
+   begin
+      procedure Q(VA); value VA; integer array VA;
+      begin
+         fillArray(VA,987);
+      end;
+      
+      fillArray(PA,321);
+      
+   end;   
+   
+   integer array RA(1:3,5:7);
+   ref(B) x;
+   
+   fillArray(RA,123);
+   x:-new B(RA);
+   checkArray("After new B(RA)",RA,123);
+   
+   fillArray(RA,456);
+   x.P(RA);
+   checkArray("After Virtual: x.P(RA)",RA,456);
+
+   fillArray(RA,789);
+   x.Q(RA);
+   checkArray("After Normal: x.Q(RA)",RA,789);
+   
+end;

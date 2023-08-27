@@ -1,0 +1,69 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 49
+%
+%  PURPOSE:     Test for statements in connection blocks.
+%
+%  REWRITTEN BY:  BEH   29/07-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(49,"--- Test for statements in connection blocks.") begin
+
+   text t;
+
+   class A;
+   begin
+      integer         i, j, k;
+   end of class A;
+
+   A class B;;
+
+   ref(A)            ra;
+   integer            l;
+
+   ra :- new A;
+
+   inspect ra do
+      for i := l, l + 1, l + 2 do outint(i, 3);
+
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext;
+
+   if t = "  0  1  2" then else begin
+      err("for-loop(1).");
+      outtext("            Erroneus values : " & t); outimage;
+   end;
+
+   inspect ra do
+      for i := i, i + 1, i + 2 step -1 until 0 do
+         for j := i, i + 1 do outint(i + j, 3);
+
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext;
+
+   if t = "  4  5  6  7 10 11  8  9  6  7  4  5  2  3  0  1"  then else begin
+      err("for-loop(2).");
+      outtext("            Erroneus values : " & t); outimage;
+   end;
+
+
+   inspect ra
+   when A do
+      for k := k, k + 1 do
+         for l := k do outint(k + l, 3)
+   when B do err("Wrong statement selected(3).")
+   otherwise err("Wrong statement selected(4).");
+
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext;
+
+   if t = "  0  2" then else begin
+      err("for-loop(5).");
+      outtext("            Erroneus values : " & t); outimage;
+   end;
+
+end;

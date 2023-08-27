@@ -1,0 +1,63 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 117
+%
+%  PURPOSE: Simple QPS-Sample 3
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(117,"--- Test Simple QPS-Sample 3") begin
+   integer traceCase;
+   text array facit(0:9);
+   ref (A) x,y;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg <> facit(traceCase) then begin
+         err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+   class A(id); text id;
+   begin trace("Event A(" & id & ")-1: Just Before First detach");
+         detach;
+         trace("Event A(" & id & ")-2: Just Before Second detach");
+         detach;
+         if(y=/=none) then
+         begin
+            trace("Event A(" & id & ")-3: Just Before resume(y)");
+            resume(y);
+         end;
+         trace("Event A(" & id & ")-4: Just Before Final-end");
+   end;
+
+
+   facit(0):-"Event 1: Just Before x:-new A";
+   facit(1):-"Event A(x)-1: Just Before First detach";
+   facit(2):-"Event 2: Just Before y:-new A";
+   facit(3):-"Event A(y)-1: Just Before First detach";
+   facit(4):-"Event 3: Just Before first resume(x)";
+   facit(5):-"Event A(x)-2: Just Before Second detach";
+   facit(6):-"Event 4: Just Before second resume(x)";
+   facit(7):-"Event A(x)-3: Just Before resume(y)";
+   facit(8):-"Event A(y)-2: Just Before Second detach";
+   facit(9):-"Event x: Just Before final end";
+
+
+   trace("Event 1: Just Before x:-new A");
+   x:- new A("x");
+   trace("Event 2: Just Before y:-new A");
+   y:- new A("y");
+   trace("Event 3: Just Before first resume(x)");
+   resume(x);
+   trace("Event 4: Just Before second resume(x)");
+   resume(x);
+   trace("Event x: Just Before final end");
+   
+
+end;

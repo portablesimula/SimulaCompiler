@@ -8,12 +8,14 @@
 package make;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
 
 import simula.compiler.Simula;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.compiler.utilities.Util;
 import simula.editor.RTOption;
 
 /**
@@ -287,7 +289,7 @@ public final class CompileFEC {
 			System.out.println("Compile: "+fileName);
 			SimulaCompiler compiler = new SimulaCompiler(fileName);
 			Option.RUNTIME_USER_DIR=new File(fileName).getParent();
-			compiler.doCompile();
+			try { compiler.doCompile(); } catch (IOException e) { Util.IERR("Compiler Error: ", e); }
 			System.out.println("Done: "+fileName);
 		}
 		System.out.println("--- END OF SIMULA TESTBATCH");

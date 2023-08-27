@@ -1,0 +1,258 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 22
+%
+%  PURPOSE:     Test for-loops with various for-list elements
+%
+%  METHOD:      Count number of times loops are iterated.
+%
+%  REWRITTEN BY:  BEH   15/07-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(22,"--- Test for-loops with various for-list elements.") begin
+
+   class c;
+   begin ref(c)next; end c;
+
+   integer i,j,n;
+   ref(c)cp;
+
+   n := 1 ;
+
+   for i:= 1 step 1 until 2 do            ! Fast For ;
+   begin
+      if i <> n then
+      begin
+         err(" : Fast For (1).") ;
+         outimage ;
+         outtext ("            Erroneus values : ") ;
+         outint (i,3) ; outint (n,3) ;
+         outimage ;
+         
+      end ;
+      n:=n+1;
+   end ;
+
+   if i <> n then
+   begin
+      err(" : Fast For (2).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+       outimage ;
+      
+   end ;
+
+   n := 1 ;
+
+   for i:= 1 step 1 until j+2 do          ! Single Step Element ;
+   begin
+      if i <> n then
+      begin
+         err(" : Single Step Element (3).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
+      end ;
+      n:=n+1;
+   end ;
+
+   if i <> n then
+   begin
+      err(" :Single Step Element (4).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+      outimage ;
+      
+   end ;
+
+
+   n := 1 ;
+
+   for i:= 1 step 1 until 2, j do         ! Complex For ;
+   begin
+      if    i <> n and n < 3
+         or n = 3 and i <> j then
+      begin
+         err(" : Complex For (5).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
+      end ;
+
+      n:=n+1;
+   end ;
+
+   if i <> j then
+   begin
+      err(" : Complex For (6).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+      outimage ;
+      
+   end ;
+
+   n := 1 ;
+
+   for i:= 1 while i>j do                 ! Single While Element ;
+   begin
+      if i <> n  or  n > 1 then
+      begin
+         err(" : Single While Element (7).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
+      end ;
+
+      n:=n+1;
+      j:=2;
+   end;
+
+   if i <> 1 or n > 2 then
+   begin
+      err(" : Singel While Element (8).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+      outimage ;
+      
+   end ;
+
+
+   n := 1 ;
+
+   for i:= 1 while i>j, 4 do               ! Complex For ;
+   begin
+      if i <> 4 or n > 1 then
+      begin
+         err(" : Complex For (9).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
+      end ;
+
+      n:=n+1;
+   end;
+
+   if i <> 4 or n > 2 then
+   begin
+      err(" : Complex For (10).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+      outimage ;
+      
+   end ;
+
+   n := 1 ;
+
+   for cp:-new c, cp.next while cp=/=none do        ! Complex For ;
+   begin
+      integer i;
+
+      if n <> 1 or i <> 0 then
+      begin
+         err(" : Complex For (11).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
+      end ;
+
+      n:=n+1;
+   end;
+
+   if n <> 2 then
+   begin
+      err(" : Complex For (12).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+      outimage ;
+      
+   end ;
+
+   n := 1 ;
+
+   for cp:-new c, cp.next while cp=/=none, new c.next do   ! Complex For ;
+   begin
+      integer n1 ;
+
+      if cp == none and n = 1 or cp =/= none and n = 2 then
+      begin
+         err(" : Complex For (13).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
+      end ;
+
+      n1 := 1 ;
+
+      for i:= 1 while i>j,4 do                             ! Complex For ;
+      begin
+         if i <> 4 or n1 <> 1 then
+         begin
+            err(" : Complex For (14).") ;
+            outimage ;
+            outtext ("            Erroneus values :") ;
+            outint (i, 3) ;
+            outint (n, 3) ;
+            outimage ;
+            
+         end ;
+
+         n1:=n1+1;
+      end;
+
+      if i <> 4 or n1 <> 2 then
+      begin
+         err(" : Complex For (15).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
+      end ;
+
+      n:=n+1;
+   end;
+
+   if n <> 3 or cp =/= none then
+   begin
+      err(" : Complex For (16).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (n, 3) ;
+      outtext (if cp == none then " cp == none" else " cp =/= none") ;
+      outimage ;
+      
+   end ;
+
+end;

@@ -241,9 +241,10 @@ public final class SimulaCompiler {
 
 	/**
 	 * Do Compile
+	 * @throws IOException when it fails
 	 */
-	public void doCompile() {
-		try {
+	public void doCompile() throws IOException {
+//		try {
 			Util.nError = 0;
 			if (!Util.isJavaIdentifier(Global.sourceName)) {
 				String sourceName = Global.sourceName;
@@ -265,9 +266,9 @@ public final class SimulaCompiler {
 			Parse.close();
 			Global.duringParsing = false;
 			if (Util.nError > 0) {
-				Util.println(
-						"Compiler terminate " + Global.sourceName + " after " + Util.nError + " errors during parsing");
-				return;
+				String msg="Compiler terminate " + Global.sourceName + " after " + Util.nError + " errors during parsing";
+				Util.println(msg);
+				throw new RuntimeException(msg);
 			}
 			// ***************************************************************
 			// *** Semantic Checker
@@ -284,9 +285,10 @@ public final class SimulaCompiler {
 			Global.duringChecking = false;
 			if(Option.PRINT_SYNTAX_TREE) programModule.printTree(0);
 			if (Util.nError > 0) {
-				Util.println("Compiler terminate " + Global.sourceName + " after " + Util.nError
-						+ " errors during semantic checking");
-				return;
+				String msg="Compiler terminate " + Global.sourceName + " after " + Util.nError
+						+ " errors during semantic checking";
+				Util.println(msg);
+				throw new RuntimeException(msg);
 			}
 			// ***************************************************************
 			// *** Generate .java intermediate code
@@ -300,9 +302,10 @@ public final class SimulaCompiler {
 					Util.println(javaClass.javaOutputFile.toString());
 			}
 			if (Util.nError > 0) {
-				Util.println("Compiler terminate " + Global.sourceName + " after " + Util.nError
-						+ " errors during code generation");
-				return;
+				String msg="Compiler terminate " + Global.sourceName + " after " + Util.nError
+						+ " errors during code generation";
+				Util.println(msg);
+				throw new RuntimeException(msg);
 			}
 
 			if (Option.TRACING)
@@ -445,14 +448,18 @@ public final class SimulaCompiler {
 				int exitValue3 = execute(cmds);
 				if (Option.verbose)
 					Util.println("END Execute .jar File. Exit value=" + exitValue3);
+				if(exitValue3 != 0) {
+					System.out.println("SimulaCompiler.doCompile: Exit value = " + exitValue3);
+					throw new RuntimeException("Execution of "+jarFile+" failed. ExitValue = "+exitValue3);
+				}
 			}
 			if (Option.DEBUGGING)
 				Util.println("------------  CLEANING UP TEMP FILES  ------------");
 			deleteTempFiles(Global.simulaTempDir);
 
-		} catch (IOException e) {
-			Util.IERR("Compiler Error: ", e);
-		}
+//		} catch (IOException e) {
+//			Util.IERR("Compiler Error: ", e);
+//		}
 	}
 
 	// ***************************************************************

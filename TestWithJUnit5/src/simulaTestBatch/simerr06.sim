@@ -1,0 +1,26 @@
+
+% Testing NONE-CHECK
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA ERROR TEST NO 06
+%
+%  PURPOSE:  ArrayIndexOutOfBounds
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class RT_ErrorTest;
+
+RT_ErrorTest("  6 --- Test ArrayIndexOutOfBounds") begin
+   text txt;
+      
+   facit(0):-"--- Testing ArrayIndexOutOfBounds";
+   facit(1):-"ExceptionHandler got error: Array index(1) = 130 is outside bounds 0:100";
+
+   DEFEXCEPTION(ExceptionHandler);
+
+   trace("--- Testing ArrayIndexOutOfBounds");
+   
+   txt:-facit(130);
+      
+   trace("THIS LINE SHOULD NEVER BE EXECUTED");
+
+end;

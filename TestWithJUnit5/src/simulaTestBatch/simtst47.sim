@@ -1,0 +1,51 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 47
+%
+%  PURPOSE:     Test of this.
+%
+%  REWRITTEN BY:  BEH   29/07-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(47,"--- Test of this") begin
+
+   ref(A) ra1, ra2, ra3;
+
+   class A;
+   begin
+
+      ref(A) procedure z;
+      begin
+          ra2 :- this A;
+
+          begin
+             integer i;
+             ra3 :- this A
+          end;
+          z :- this A
+      end of procedure z;
+
+   end;
+
+   ra1 :- new A;
+   ra1 :- ra1.z;
+
+   if ra1 == ra2 and ra2 == ra3 then
+   else
+   begin
+      err("this.");
+      outtext("            Erroneus references : ");
+      outimage;
+      outtext("                      ra1 == ra2 - ");
+      outtext(if ra1 == ra2 then "true" else "false");
+      outimage;
+      outtext("                      ra1 == ra3 - ");
+      outtext(if ra1 == ra3 then "true" else "false");
+      outimage;
+      outtext("                      ra2 == ra3 - ");
+      outtext(if ra2 == ra3 then "true" else "false");
+      outimage;
+   end;
+
+end;

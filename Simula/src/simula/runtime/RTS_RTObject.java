@@ -2244,8 +2244,9 @@ public abstract class RTS_RTObject {
 			RTS_COMMON.println(" -  Elapsed Time Approximately " + timeUsed / 1000 + " sec.");
 		} else if (RTS_COMMON.numberOfEditOverflows > 0)
 			RTS_COMMON.println("End program: WARNING " + RTS_COMMON.numberOfEditOverflows + " EditOverflows");
-		if (RTS_COMMON.console == null)
+		if (RTS_COMMON.console == null) {
 			System.exit(exitValue);
+		}
 	}
 
 	// *********************************************************************

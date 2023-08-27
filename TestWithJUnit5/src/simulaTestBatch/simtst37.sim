@@ -1,0 +1,79 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 37
+%
+%  PURPOSE:     Test transmission by name, when the actual parameter is of a
+%               different type than the formal parameter.
+%
+%  WRITTEN BY:  BEH   23/07-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(37,"--- Test call by name: Actual parameter is of a different type than the formal parameter.") begin
+
+   integer i, j ;
+   real x, y, z, eps ;
+
+   procedure P (r, s) ;
+      name r, s ;
+      real r, s ;
+   begin   
+      s := 3.14 ;
+      r := s := 3.14 ;
+      x := r := s := 3.14 ;
+   end;
+
+   eps := 0.001 ;
+
+   P (i, j) ;
+
+   if     i = 3
+      and j = 3
+      and x+eps > 3.14 and x-eps < 3.14 then
+   else
+   begin
+      err("Value of actual parameters (1).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outimage ;
+      outint (i,16) ;
+      outint (j, 4) ;
+      outreal (x, 4, 10) ;
+      outimage ;
+   end ;
+
+   P (i, y) ;
+
+   if     i = 3
+      and y-eps < 3.14 and y+eps > 3.14
+      and x-eps < 3.14 and x+eps > 3.14 then
+   else
+   begin
+      err("Value of actual parameters (2).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outimage ;
+      outint (i,16) ;
+      outreal (y, 4, 10) ;
+      outreal (x, 4, 10) ;
+      outimage ;
+   end ;
+
+   P (z, j) ;
+
+   if     j = 3
+      and z-eps < 3.14 and z+eps > 3.14
+      and x-eps < 3.14 and x+eps > 3.14 then
+   else
+   begin
+      err("Value of actual parameters (3).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outimage ;
+      outint (j,16) ;
+      outreal (z, 4, 10) ;
+      outreal (x, 4, 10) ;
+      outimage ;
+   end ;
+
+end;

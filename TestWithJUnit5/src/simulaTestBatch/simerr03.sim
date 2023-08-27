@@ -1,0 +1,27 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA ERROR TEST NO 03
+%
+%  PURPOSE: Test Division by Zero in Precompiled Class
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class RT_ErrorTest;
+external class SeparatClass;
+
+RT_ErrorTest("  3 --- Test Division by Zero in Precompiled Class") begin
+
+   facit(0):-"--- START DIV BY ZERO SAMPLE";
+   facit(1):-"ExceptionHandler got error: ArithmeticException: / by zero";
+
+   DEFEXCEPTION(ExceptionHandler);
+
+   trace("--- START DIV BY ZERO SAMPLE");
+  
+   SeparatClass(5) begin
+      x :- new A;
+      x.proc1;
+   end;
+     
+   trace("THIS LINE SHOULD NEVER BE EXECUTED");
+  
+end;

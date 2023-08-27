@@ -1,0 +1,28 @@
+
+% Testing NONE-CHECK
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA ERROR TEST NO 05
+%
+%  PURPOSE:  NumberFormatException
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class RT_ErrorTest;
+
+RT_ErrorTest("  5 --- Test NumberFormatException") begin
+   text txt;
+   integer n;
+   
+   facit(0):-"--- Testing NumberFormatException";
+   facit(1):-"ExceptionHandler got error: NumberFormatException: For input string: """"";
+
+   DEFEXCEPTION(ExceptionHandler);
+
+   trace("--- Testing NumberFormatException");
+   
+   txt:-copy(" GG  123FF  ");
+   n:=txt.getint;
+      
+   trace("THIS LINE SHOULD NEVER BE EXECUTED");
+
+end;

@@ -1,0 +1,57 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 124
+%
+%  PURPOSE: GOTO VIRTUAL label
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(124,"--- Test goto virtual label") begin
+   integer traceCase;
+   text array facit(0:4);
+   integer n;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg ne facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+   class A; virtual: label L1;
+   begin
+
+      L1: trace("A.L1"); n:=n+1;
+          if n < 4 then
+          begin
+              trace("JUST BEFORE GOTO L1 - B.L1");
+              goto L1;
+          end;
+   end;
+
+   A class B;
+   begin
+      BEGIN_B: trace("begin B");
+      L1: trace("B.L1"); n:=n+1;
+     
+   end;
+
+   
+   facit(0):-"begin PROGRAM";
+   facit(1):-"A.L1";
+   facit(2):-"JUST BEFORE GOTO L1 - B.L1";
+   facit(3):-"B.L1";
+   facit(4):-"end PROGRAM";
+   
+   trace("begin PROGRAM");
+   new B;
+   trace("end PROGRAM");
+      
+   
+end;   

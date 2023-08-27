@@ -1,0 +1,51 @@
+
+
+% ===============================================   Main   program  ============
+%  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 10
+%
+%  PURPOSE:     To test the evaluation of text-constants
+%
+%  METHOD:      Take some examples and see if we get the expected values.
+%
+%  WRITTEN BY:  BEH  10/07-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(10,"--- Test the evaluation of text constants.") begin
+
+                                                 !*****************************;
+                                                 ! Test sequence of simple     ;
+                                                 ! strings.                    ;
+                                                 !*****************************;
+   if "Ab" "cde" = "Abcde" then
+   else err ("*** error : Text constant (1).") ;
+
+   if "AB"
+           "CDE" = "ABCDE" then
+   else err ("*** error : Text constant (2).") ;
+
+   if "Abcde" = "AB" "cde" then err ("*** error : Text constant (3).") ;
+                                                 !*****************************;
+                                                 ! Test !x!                    ;
+                                                 !*****************************;
+   if "12!32!45" = "12 45" then
+   else err ("*** error : Text constant (4).") ;
+
+   if "!345!" = "!33!345!33!" then
+   else
+   begin
+      err ("*** error : Text constant (5).") ;
+      outtext("    LHS:"); outtext("!345!");
+      outtext(", RHS:"); outtext("!33!345!33!");
+   end ;
+
+   if "!3" "2!" = "!33!32!33!" then
+   else err ("*** error : Text constant (6).") ;
+
+                                                !******************************;
+                                                ! Test "" in a string.         ;
+                                                !******************************;
+   if "a""b" = "a!34!b" then
+   else err ("*** error : Text constant (7).") ;
+ 
+ end;

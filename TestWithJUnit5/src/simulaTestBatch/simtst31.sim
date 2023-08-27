@@ -1,0 +1,191 @@
+
+% =======================================   Main   program =============
+%  PROGRAM name:   Simula a.s. - SIMULA TEST NO 31
+%
+%  PURPOSE:     Test labels and switches as parameters to procedures
+%
+%  REWRITTEN BY:  BEH   21/07-86
+%  MODIFIED  BY:  MYH   24/07-2018
+% ======================================================================
+external class SimulaTest;
+
+SimulaTest(31,"--- Test labels and switches as parameters to procedures") begin
+
+   procedure P(LFD);  label LFD;
+      begin
+      b :=  not b;
+      goto LFD
+   end of procedure P;
+
+   procedure Q(LFN);  name LFN;  label LFN;
+   begin
+      b :=  not b;
+      goto LFN
+   end of procedure Q;
+
+   procedure R(SFD);  switch SFD;
+   begin
+      b :=  not b;
+      i := i + 1;
+      goto SFD(i);
+      goto SFD(1)
+   end of procedure R;
+
+   procedure S(SFN);  name SFN;  switch SFN;
+   begin
+      b :=  not b;
+      i := i + 1;
+      trace("goto SFN(i)");
+      goto SFN(i);
+      goto SFN(1)
+   end of procedure S;
+
+
+   procedure testpath(p); value p; text p;
+   begin
+      if path.strip = p then
+      else
+      begin
+         err("Wrong path selected (");
+         outint(j, if j < 10 then 1 else 2);
+         outtext(").");
+         outimage;
+         outtext("            Erroneous values : "); outtext(path.strip); outint(j, 3); outimage;
+         outtext("                  Facit Path : "); outtext(p.strip); outimage;
+      end
+   end pros. testpath;
+
+
+   switch S1 := L1, L2, L3, S2(1);
+   switch S2 := S1(1), L2, S2(2);
+   switch S3 := if b then L2 else L3;
+   switch CONTROL := C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12;
+
+   boolean            b;
+   integer            i, j;
+   text               path;
+
+   procedure trace(msg); text msg;
+   begin
+      if verbose then
+      begin
+         outtext(msg & " - PATH=" & path & " - i,j,b=");
+         outint(i,3); outint(j,3);
+         if b then outtext(" true") else outtext(" false");
+         outimage;
+      end;   
+   end;
+
+   goto START;
+
+   L1: path.putchar('1');
+   trace("AT label L1");
+   goto RETURN;
+
+   L2: path.putchar('2');
+   trace("AT label L2");
+   goto RETURN;
+
+   L3: path.putchar('3');
+   trace("AT label L3");
+   goto RETURN;
+
+   L4: path.putchar('4');
+   trace("AT label L4");
+   goto RETURN;
+
+
+RETURN:
+
+   goto CONTROL(j);
+
+
+START:
+
+   path :- blanks(20);
+   j := 1;
+   P(L1);
+
+C1:
+   testpath("1");
+   j := 2;
+   trace("AT CONTROL C1");
+   P(if b then L2 else L1);
+
+C2:
+   testpath("12");
+   j := 3;
+   trace("AT CONTROL C2");
+   Q(S1(3));
+
+C3:
+   testpath("123");
+   j := 4;
+   trace("AT CONTROL C3");
+   Q(if b then S1(3) else L4);
+
+C4:
+   testpath("1234");
+   j := 5;
+   i := 0;
+   trace("AT CONTROL C4");
+   R(S1);
+
+C5:
+   testpath("12341");
+   j := 6;
+   i := 2;
+   trace("AT CONTROL C5");
+   R(S1);
+
+C6:
+   testpath("123413");
+   j := 7;
+   i := 0;
+   trace("AT CONTROL C6");
+   R(S2);
+
+C7:
+   testpath("1234131");
+   j := 8;
+   i := 0;
+   trace("AT CONTROL C7");
+   S(S1);
+
+C8:
+   testpath("12341311");
+   j := 9;
+   i := 3;
+   trace("AT CONTROL C8");
+   S(S1);
+
+C9:
+   testpath("123413111");
+   j := 10;
+   i := 0;
+   trace("AT CONTROL C9: CALL - if b then S(S1) else S(S3)");
+   trace("AT CONTROL C9: CALL - " & (if b then "S(S1)" else "S(S3)"));
+   if b then S(S1) else S(S3);
+
+C10:
+%   testpath("1234131113");
+   testpath("1234131111");
+   j := 11;
+   b := true;
+   i := 0;
+   trace("AT CONTROL C10");
+   if b then R(S3) else R(S2);
+
+C11:
+%   testpath("12341311133");
+   testpath("12341311113");
+   j := 12;
+   i := 0;
+   trace("AT CONTROL C11");
+   S(S3);
+
+C12:
+%   testpath("123413111332");
+   testpath("123413111132");
+
+end;

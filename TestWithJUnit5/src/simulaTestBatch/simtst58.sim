@@ -1,0 +1,29 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 58
+%
+%  PURPOSE:     Test goto statement within a connection block where the
+%               destination is in the corresponding otherwise-clause.
+%
+%  WRITTEN BY:  BEH   22/08-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(58,"--- Test Goto from within a connection into otherwise") begin
+
+   boolean failed;
+
+   class A;;
+
+   failed := true;
+
+   inspect new A do begin
+      goto LAB;
+   end
+   otherwise begin
+      LAB: failed := false;
+   end;   
+
+   if failed then err("goto test failed.");
+   
+end;

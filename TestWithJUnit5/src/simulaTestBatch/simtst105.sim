@@ -1,0 +1,55 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 105
+%
+%  PURPOSE: Multiple Assignments
+%
+%  Example from Simula Standard 
+%  -----------------------------------------------------------------------------
+%  Note: Consider the statement "X:= i:= Y:= F:= 3.14" where X and Y are real variables,
+%  i is an integer variable, and F is a formal parameter called by name and specified real.
+%  If the actual parameter for F is a real variable, then X, i, Y and F are given the values 3, 3, 3.14 and 3.14 respectively.
+%  If the actual parameter is an integer variable, the respective values are 3, 3, 3.14 and 3.
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(105,"--- Test Multiple Assignments") begin
+
+   long real r;
+   integer n;
+   text result;
+   
+   text procedure FIELD(w); integer w;
+   begin integer pos; pos:=result.pos; 
+         FIELD :- result.sub(pos,w);
+         result.setpos(pos+w);
+   end FIELD;
+   
+   procedure P(case,F,val,facit); name F; long real F,val;  text case,facit;
+   begin
+    integer i;
+    long real X,Y;
+    X:= i:= Y:= F:= val;
+
+    result:-blanks(80);
+    FIELD(2):="X="; FIELD(6).putfix(X,4); 
+    FIELD(4):=", i="; FIELD(1).putint(i);
+    FIELD(4):=", Y="; FIELD(6).putfix(Y,4);
+    FIELD(4):=", F="; FIELD(6).putfix(F,4);
+    result:-result.strip;
+    if verbose or result <> facit then begin
+       if result <> facit then err("Failed");
+       outtext("Test "&case&": results: " & result); outimage;
+       outtext("               facit: "&facit); outimage; outimage;
+       
+    end;   
+   end;
+
+    
+   P("case 1",r,3.14,"X=3.0000, i=3, Y=3.1400, F=3.1400");
+   P("case 2",n,3.14,"X=3.0000, i=3, Y=3.1400, F=3.0000");
+   P("case 3",r,3.54,"X=4.0000, i=4, Y=3.5400, F=3.5400");
+   P("case 4",n,4.01,"X=4.0000, i=4, Y=4.0100, F=4.0000");
+
+end;   

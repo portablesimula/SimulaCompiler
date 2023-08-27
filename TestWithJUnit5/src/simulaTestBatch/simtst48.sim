@@ -1,0 +1,83 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 48
+%
+%  PURPOSE:     Test of qua.
+%
+%  WRITTEN BY:  BEH   29/07-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(48,"--- Test of qua") begin
+
+   class A;
+   begin
+      text procedure Tp; Tp :- copy(" A.Tp ");
+
+      integer         i;
+
+      i := 1;
+   end of class A;
+
+   A class B;
+   begin
+      text procedure Tp; Tp :- copy(" B.Tp ");
+
+      integer         i;
+
+      i := 2;
+   end of class B;
+
+   B class C;
+   begin
+      text procedure Tp; Tp :- copy(" C.Tp ");
+
+      integer         i;
+
+      i := 3;
+   end of class C;
+
+   ref(A)            ra;
+   ref(B)            rb;
+   ref(C)            rc;
+
+   procedure check(i, t, vi, vt, enr); value t, vt;
+      integer i, vi, enr;
+      text t, vt;
+   begin
+      if i = vi and t = vt then else begin
+         err("Qualification");
+         outtext("   Case("); outint(enr, if enr < 10 then 1 else 2);
+         outtext(").");
+         outimage;
+         outtext("            Erroneus values : ");
+         outimage;
+         outtext("                   i = ");
+         outint(i, 4);
+         outimage;
+         outtext("                   t = ");
+         outtext(t);
+         outimage;
+      end;
+   end;
+
+
+   ra :- rb :- rc :- new C;
+
+   check(ra.i, ra.Tp, 1, " A.Tp ", 1);
+   check(ra qua B.i, ra qua B.Tp, 2, " B.Tp ", 2);
+   check(ra qua C.i, ra qua C.Tp, 3, " C.Tp ", 3);
+
+   check(rb qua A.i, rb qua A.Tp, 1, " A.Tp ", 4);
+   check(rb.i, rb.Tp, 2, " B.Tp ", 5);
+   check(rb qua C.i, rb qua C.Tp, 3, " C.Tp ", 6);
+
+   check(rc qua A.i, rb qua A.Tp, 1, " A.Tp ", 7);
+   check(rc qua B.i, rc qua B.Tp, 2, " B.Tp ", 8);
+   check(rc.i, rc.Tp, 3, " C.Tp ", 9);
+
+   check(ra qua B qua C qua B qua A.i, rb qua A qua C qua B.Tp,
+          1, " B.Tp ", 10);
+   check(rc qua C.i, ra qua C qua A qua B qua A qua C.Tp, 3, " C.Tp ", 11);
+
+end;

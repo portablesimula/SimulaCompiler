@@ -1,0 +1,69 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 126
+%
+%  PURPOSE: goto simple switch
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(126,"--- Test goto simple switch") begin
+   integer traceCase;
+   text array facit(0:10);
+   integer n;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg <> facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+   class A; virtual: label L1; procedure P;
+   begin
+      switch S1 := L1, L3, L6;
+
+      L1: trace("A.L1"); n:=n+1;
+      
+      L3: trace("A.L3");
+      L6: trace("A.L6");
+   end;
+
+   A class B;
+   begin
+      procedure P; begin end;
+      BEGIN_B: trace("begin B");
+      L1: trace("B.L1"); n:=n+1;
+     
+      if n < 4 then
+      begin
+         trace("JUST BEFORE GOTO S(1) - B.L1");
+         goto S1(1);
+      end;
+   end;
+   
+
+   facit(0):-"begin PROGRAM";
+   facit(1):-"A.L1";
+   facit(2):-"A.L3";
+   facit(3):-"A.L6";
+   facit(4):-"begin B";
+   facit(5):-"B.L1";
+   facit(6):-"JUST BEFORE GOTO S(1) - B.L1";
+   facit(7):-"B.L1";
+   facit(8):-"JUST BEFORE GOTO S(1) - B.L1";
+   facit(9):-"B.L1";
+   facit(10):-"end PROGRAM";
+   
+   trace("begin PROGRAM");
+   
+   new B;
+   
+   trace("end PROGRAM");
+
+end;
