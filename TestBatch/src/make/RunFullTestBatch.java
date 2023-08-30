@@ -9,6 +9,10 @@ package make;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
@@ -233,9 +237,63 @@ public final class RunFullTestBatch {
 			SimulaCompiler compiler = new SimulaCompiler(fileName);
 			try { compiler.doCompile(); } catch (IOException e) { Util.IERR("Compiler Error: ", e); }
 		}
-		System.out.println("--- END OF SIMULA TESTBATCH");
+		
+		String testBatchDir = userDir+"/src/simulaTestBatch/sim/bin/";
+		//list(testBatchDir);
+		deleteFiles(testBatchDir);
+		//list(testBatchDir);
+		System.out.println("\n--- END OF SIMULA TESTBATCH");
 		long timeUsed  = System.currentTimeMillis( ) - startTimeMs;
 		System.out.println("\nElapsed Time: Approximately " + timeUsed/1000 + " sec.");
 	}
+
+	// ***************************************************************
+	// *** DELETE FILES
+	// ***************************************************************
+	private static void deleteFiles(final String dirName) {
+		try { File tmpClass = new File(dirName);
+		File[] elt = tmpClass.listFiles();
+		if(elt==null) return; 
+		for (File f : elt) {
+			if(f.isDirectory()) deleteFiles(f.getPath());
+			f.delete();
+		}
+		} catch (Exception e) { e.printStackTrace(); }
+	}
+
+	// ***************************************************************
+	// *** LIST FILES
+	// ***************************************************************
+	private static void list(final String dirName) { list(new File(dirName)); }
+	private static void list(final File dir) {
+		try { System.out.println("------------  LIST "+dir+"  ------------");
+		list("",dir);
+		} catch (Exception e) { e.printStackTrace(); }
+	}
+
+	private static void list(String indent,final File dir) {
+		try {
+			//System.out.println("tmpClass: "+dir);
+			File[] elt = dir.listFiles();
+			if(elt==null || elt.length==0) {
+				System.out.println("Empty Directory: "+dir);
+				return; 
+			}
+			System.out.println("Elements: "+elt.length);
+			for (File f : elt) {
+				System.out.println(indent+"- "+getModifiedTime(f)+"  "+f);
+				if(f.isDirectory()) list(indent+"   ",f);
+			}
+		} catch (Exception e) { e.printStackTrace(); }
+	}
+
+	private static String getModifiedTime(File file) {
+		try { Path path = Paths.get(file.toString());
+		BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
+		return(attr.lastModifiedTime().toString().substring(0,19).replace('T',' '));
+		} catch (IOException e) { e.printStackTrace(); }
+		return(null);
+	}
+
 
 }

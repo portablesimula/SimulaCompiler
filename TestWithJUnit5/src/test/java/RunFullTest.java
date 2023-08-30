@@ -43,6 +43,7 @@ public final class RunFullTest {
 	private static final File simulaDir=new File("C:/GitHub/SimulaCompiler/Simula");
 	private static final File userDir=new File("C:/GitHub/SimulaCompiler/TestWithJUnit5");
 	private static final String testBatchDir = userDir+"/src/simulaTestBatch/bin/";
+	private static long startTimeMs = System.currentTimeMillis( );
 
 
     @BeforeAll                                         
@@ -63,14 +64,17 @@ public final class RunFullTest {
 //		list(testBatchDir);
 		deleteFiles(testBatchDir);
 //		list(testBatchDir);
-    	
+		
+		System.out.println("\n--- END OF SIMULA TESTBATCH");
+		long timeUsed  = System.currentTimeMillis( ) - startTimeMs;
+		System.out.println("\nElapsed Time: Approximately " + timeUsed/1000 + " sec.");
     }
 
  
     
 	@Test @DisplayName("Precompile 0: SimulaTest.sim") void testPreSimulaTest() { doCompile("SimulaTest.sim"); }
 
-    @Test @DisplayName("Run simtst001.sim - Meaningless test of conditional statements") void testSimtst01() { doCompile("simtst01.sim"); }
+	@Test @DisplayName("Run simtst001.sim - Meaningless test of conditional statements") void testSimtst01() { doCompile("simtst01.sim"); }
 	@Test @DisplayName("Run simtst002.sim - Test boolean operators/expressions") void testSimtst02() { doCompile("simtst02.sim"); }
 	@Test @DisplayName("Run simtst003.sim - Test Text Value Relations") void testSimtst03() { doCompile("simtst03.sim"); }
 	@Test @DisplayName("Run simtst004.sim - To test putint and putreal.") void testSimtst04() { doCompile("simtst04.sim"); }
@@ -332,6 +336,7 @@ public final class RunFullTest {
 	// ***************************************************************
 	// *** LIST FILES
 	// ***************************************************************
+	@SuppressWarnings("unused")
 	private static void list(final String dirName) { list(new File(dirName)); }
 	private static void list(final File dir) {
 		try { System.out.println("------------  LIST "+dir+"  ------------");
