@@ -18,7 +18,7 @@ external class SimulaTest;
 
 SimulaTest(80,"--- Test the attribute 'isopen' of class file.") begin
    
-   text fileName="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/any8089";
+   text fileName="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/any8089";
 
    ref(Imagefile) f1, f2;
 

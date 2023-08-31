@@ -13,7 +13,7 @@ SimulaTest(31,"--- Test labels and switches as parameters to procedures") begin
 --COMMENT DATA data96;
 
 --text fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/data96";
-text fileName="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/data96";
+text fileName="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/data96";
 
 
 inspect new infile(fileName) do

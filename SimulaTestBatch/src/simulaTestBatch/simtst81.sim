@@ -14,10 +14,10 @@ SimulaTest(81,"--- Test the value of close.") begin
 
    ref(File) xf;
    
-   text anyIntypeFile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyIntypeFile81";
-   text anyouttypeFile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyouttypeFile81";
-   text anyDirectfile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyDirectFile81";
-   text anyDirectbytefile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyDirectByteFile81";
+   text anyIntypeFile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyIntypeFile81";
+   text anyouttypeFile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyouttypeFile81";
+   text anyDirectfile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyDirectFile81";
+   text anyDirectbytefile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyDirectByteFile81";
 
    procedure report(line,t,abort); integer line; text t; boolean abort;
    begin err("Failed");

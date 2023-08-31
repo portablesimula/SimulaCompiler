@@ -26,15 +26,15 @@ external class SimulaTest;
 
 SimulaTest(79,"--- Test the attribute 'isopen' of class File.") begin
 
-   text anyExistingdirectfile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyExistingDirectfile79";
-   text anyImagefile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyImageFile79";
+   text anyExistingdirectfile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyExistingDirectfile79";
+   text anyImagefile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyImageFile79";
 
-   text anyExistingImagefile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyExistingImageFile79";
-   text anyExitingbytefile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyExistingByteFile79";
-   text anyoutfile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyOutFile79";
-   text anyoutbytefile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyOutByteFile79";
-   text anyprintfile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyPrintFile79";
-   text anydirectbytefile="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyDirectByteFile79";
+   text anyExistingImagefile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyExistingImageFile79";
+   text anyExitingbytefile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyExistingByteFile79";
+   text anyoutfile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyOutFile79";
+   text anyoutbytefile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyOutByteFile79";
+   text anyprintfile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyPrintFile79";
+   text anydirectbytefile="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyDirectByteFile79";
 
    ref(File) xf;
    integer i;

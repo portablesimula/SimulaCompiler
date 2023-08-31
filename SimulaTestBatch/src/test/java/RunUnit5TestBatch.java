@@ -39,19 +39,20 @@ import org.junit.jupiter.api.MethodOrderer;
  *
  */
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public final class RunFullTest {
+public final class RunUnit5TestBatch {
 	private static final File simulaDir=new File("C:/GitHub/SimulaCompiler/Simula");
-	private static final File userDir=new File("C:/GitHub/SimulaCompiler/TestWithJUnit5");
-	private static final String testBatchDir = userDir+"/src/simulaTestBatch/bin/";
+	private static final File userDir=new File("C:/GitHub/SimulaCompiler/SimulaTestBatch");
+	private static final String sourceDir = userDir+"/src/simulaTestBatch/";
+	private static final String testBatchJarDir = userDir+"/src/simulaTestBatch/bin/";
 	private static long startTimeMs = System.currentTimeMillis( );
 
 
     @BeforeAll                                         
     static void init() {
 		
-//		list(testBatchDir);
-		deleteFiles(testBatchDir);
-//		list(testBatchDir);
+//		list(testBatchJarDir);
+		deleteFiles(testBatchJarDir);
+//		list(testBatchJarDir);
 		
 		initCompilerOptions();
 		initRuntimerOptions();
@@ -61,9 +62,9 @@ public final class RunFullTest {
     @AfterAll
     static void postActions() {
 
-//		list(testBatchDir);
-		deleteFiles(testBatchDir);
-//		list(testBatchDir);
+//		list(testBatchJarDir);
+		deleteFiles(testBatchJarDir);
+//		list(testBatchJarDir);
 		
 		System.out.println("\n--- END OF SIMULA TESTBATCH");
 		long timeUsed  = System.currentTimeMillis( ) - startTimeMs;
@@ -311,7 +312,7 @@ public final class RunFullTest {
 	// *** CALL SIMULA COMPILER
 	// ***************************************************************
 	void doCompile(String name) {
-		String fileName = userDir+"/src/"+Global.packetName+"/"+name;
+		String fileName = sourceDir+name;
 //		Option.RUNTIME_USER_DIR=new File(fileName).getParent();
 //		System.out.println("RUN: "+fileName);
 		SimulaCompiler compiler = new SimulaCompiler(fileName);

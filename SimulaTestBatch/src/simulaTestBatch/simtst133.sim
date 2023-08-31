@@ -10,7 +10,7 @@ external class SimulaTest;
 
 SimulaTest(133,"--- Test infile reading with inimage and inrecord.") begin
 
-   text fileName="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/anyFile133";
+   text fileName="C:/GitHub/SimulaCompiler/SimulaTestBatch/src/simulaTestBatch/files/anyFile133";
    -- The file above should contain the two lines:
    --      12345678901234567890
    --      abcdefghijklmnopqrstuvwAB
