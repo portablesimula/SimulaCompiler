@@ -100,6 +100,9 @@ public final class Option {
 	/** Debug option */	public static boolean TRACE_BYTECODE_OUTPUT=false;
 	/** Debug option */	public static boolean LIST_REPAIRED_INSTRUCTION_LIST=false;
 	/** Debug option */	public static boolean TRACE_REPAIRING=false;
+	/** Debug option */	public static boolean LIST_INPUT_INSTRUCTION_LIST=false;
+	/** Debug option */	public static boolean TRACE_REPAIRING_INPUT=false;
+	/** Debug option */	public static boolean TRACE_REPAIRING_OUTPUT=false;
 
 	/** Runtime Options */ public static String SOURCE_FILE="";
 	/** Runtime Options */ public static String RUNTIME_USER_DIR="";
