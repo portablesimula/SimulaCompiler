@@ -2,6 +2,7 @@
 begin
   integer i;
   
+   i:=55;
 L:
    i:=44;
    

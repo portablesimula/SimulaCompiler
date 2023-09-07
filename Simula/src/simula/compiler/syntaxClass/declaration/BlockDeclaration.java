@@ -181,6 +181,20 @@ permits ClassDeclaration, ProcedureDeclaration, MaybeBlockDeclaration {
 	}
 
 	// ***********************************************************************************************
+	// *** Coding Utility: getNlabels
+	// ***********************************************************************************************
+	/**
+	 * Returns the number of labels in this block.
+	 * <p>
+	 * Redefined in ClassDeclaration
+	 * 
+	 * @return the number of labels in this class
+	 */
+	int getNlabels() {
+		return (labelList.size());
+	}
+
+	// ***********************************************************************************************
 	// *** Coding Utility: codeSTMBody
 	// ***********************************************************************************************
 	/**
@@ -192,7 +206,7 @@ permits ClassDeclaration, ProcedureDeclaration, MaybeBlockDeclaration {
 			GeneratedJavaClass.code("_LOOP:while(_JTX>=0) {");
 			GeneratedJavaClass.code("try {");
 			if(Option.USE_FILE_CLASS_API==1) {
-				GeneratedJavaClass.code("_JUMPTABLE(_JTX,"+labelList.size()+");","For ByteCode Engineering");			
+				GeneratedJavaClass.code("_JUMPTABLE(_JTX,"+this.getNlabels()+");","For ByteCode Engineering");			
 			} else if(Option.USE_FILE_CLASS_API==2) {
 					GeneratedJavaClass.code("_PRE_TABLE();","For ByteCode Engineering");
 					GeneratedJavaClass.code("_JUMPTABLE(_JTX,"+labelList.size()+");","For ByteCode Engineering");			

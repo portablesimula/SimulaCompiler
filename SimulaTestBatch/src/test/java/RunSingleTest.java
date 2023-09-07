@@ -43,7 +43,7 @@ public final class RunSingleTest {
 //		names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
 //		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 //		names.add("simtst07.sim"); // OK:  Test Mathematical Library
-		names.add("simtst08.sim"); // OK:  Test Scope of Variables.
+//		names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 //		names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
 //		names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
 //
@@ -164,7 +164,7 @@ public final class RunSingleTest {
 //
 //		names.add("simtst111.sim"); // OK: Virtual Label Sample 1
 //		names.add("simtst112.sim"); // OK: Virtual Label Sample 2
-//		names.add("simtst113.sim"); // OK: Virtual Switch Sample 1
+		names.add("simtst113.sim"); // OK: Virtual Switch Sample 1
 //		names.add("simtst114.sim"); // OK: Switch Statement
 //		names.add("simtst115.sim"); // OK: Simple QPS-Sample 1
 //		names.add("simtst116.sim"); // OK: Simple QPS-Sample 2
@@ -240,8 +240,15 @@ public final class RunSingleTest {
 //		Option.TRACE_CODING=true;
 		Option.GNERATE_LINE_CALLS=true;
 
+		Option.USE_FILE_CLASS_API=1;
+		//Option.LIST_INPUT_INSTRUCTION_LIST=true;
+		//Option.LIST_REPAIRED_INSTRUCTION_LIST=true;
+		//Option.TRACE_REPAIRING_INPUT=true;
+		//Option.TRACE_REPAIRING=true;
+		//Option.TRACE_REPAIRING_OUTPUT=true;
+
 		Global.packetName="simulaTestBatch";
-//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
+		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
 //		Global.extLib="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/sim/bin";
 		

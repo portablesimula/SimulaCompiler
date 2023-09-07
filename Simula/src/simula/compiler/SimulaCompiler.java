@@ -394,7 +394,11 @@ public final class SimulaCompiler {
 				for (GeneratedJavaClass javaClass : Global.generatedJavaClass) {
 					if (javaClass.mustDoByteCodeEngineering) {
 						String classFileName = javaClass.getClassOutputFileName();
-						new ByteCodeEngineering().doRepairSingleByteCode(classFileName);
+//						if(Option.USE_FILE_CLASS_API == 1){
+//							ClassFileTransform.doRepairSingleByteCode(classFileName,classFileName);
+//						} else {
+							new ByteCodeEngineering().doRepairSingleByteCode(classFileName);
+//						}
 					}
 				}
 				if (Option.TRACE_BYTECODE_OUTPUT) {

@@ -237,9 +237,9 @@ public final class RunFullTestBatch {
 			try { compiler.doCompile(); } catch (IOException e) { Util.IERR("Compiler Error: ", e); }
 		}
 		
-		list(testBatchJarDir);
+//		list(testBatchJarDir);
 		deleteFiles(testBatchJarDir);
-		list(testBatchJarDir);
+//		list(testBatchJarDir);
 		
 		System.out.println("\n--- END OF SIMULA TESTBATCH");
 		long timeUsed  = System.currentTimeMillis( ) - startTimeMs;

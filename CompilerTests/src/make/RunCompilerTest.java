@@ -99,13 +99,13 @@ public final class RunCompilerTest {
 		// String name="/simulaRTS_Examples/Sect-2-3-SubClass.sim";
 		// String name="/simulaRTS_Examples/Sect-2-4-PrefixedBlock.sim";
 		// String name="/simulaRTS_Examples/Sect-2-5-Procedure.sim";
-		 String name="/simulaRTS_Examples/Sect-2-6-Switch.sim";
+		// String name="/simulaRTS_Examples/Sect-2-6-Switch.sim";
 		// String name="/simulaRTS_Examples/Sect-3-3-Text.sim";
 		// String name="/simulaRTS_Examples/Sect-4-1-JensensDevice.sim";
 		// String name="/simulaRTS_Examples/Sect-4-2-ArrayParameter.sim";
 		// String name="/simulaRTS_Examples/Sect-4-3-ProcedureAsParameter.sim";
 		// String name="/simulaRTS_Examples/Sect-5-SomeExpressions.sim";
-		// String name="/simulaRTS_Examples/Sect-6-1-GotoStatement.sim";
+		 String name="/simulaRTS_Examples/Sect-6-1-GotoStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-2-ForStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-3-ConnectionStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-4-SwitchStatement.sim";
@@ -252,7 +252,7 @@ public final class RunCompilerTest {
 
 			// Set Compile Time Options and tracing.
 			Option.INLINE_TESTING=true;
-//		    Option.verbose = true;
+		    Option.verbose = true;
 			Option.WARNINGS=true;
 //			Option.EXTENSIONS=false;
 //			Option.CASE_SENSITIVE=true;
@@ -283,6 +283,7 @@ public final class RunCompilerTest {
 //			Option.USE_FILE_CLASS_API=1;
 //			Option.USE_FILE_CLASS_API=2;
 			
+			Option.USE_FILE_CLASS_API=1;
 //			Option.TRACE_REPAIRING=true;
 //			Option.LIST_REPAIRED_INSTRUCTION_LIST=true;
 //			Option.TRACE_BYTECODE_OUTPUT=true;
@@ -290,14 +291,15 @@ public final class RunCompilerTest {
 
 //			File simulaHome=new File("C:/GitHub/SimulaCompiler/TestBatch");
 			File simulaDir=new File("C:/GitHub/SimulaCompiler/Simula");
-			File userDir=new File("C:/GitHub/SimulaCompiler/TestBatch");
+			File userDir=new File("C:/GitHub/SimulaCompiler/CompilerTests");
 			
 			
 			Global.packetName="simulaTestPrograms";
 			Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
-			Global.outputDir=new File("C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestPrograms/samples/simula/bin");
+//			Global.outputDir=new File("C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestPrograms/samples/simula/bin");
+			Global.outputDir=new File("C:/GitHub/SimulaCompiler/CompilerTests/bin/simulaTestPrograms");
 			
 			
 			// Set RunTime Options and tracing.

@@ -85,8 +85,10 @@ public final class LabeledStatement extends Statement {
 			Meaning meaning=Global.getCurrentScope().findLabelMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
 			String labelcode;
-			if(Option.USE_FILE_CLASS_API > 0)
-				 labelcode="_SIM_LABEL("+decl.index+");";
+			if(Option.USE_FILE_CLASS_API > 0) {
+				labelcode="_SIM_LABEL("+decl.index+");";
+				System.out.println("LabeledStatement.doJavaCoding: "+labelcode+" USED IN "+Global.currentJavaModule);
+			}
 			else labelcode="_LABEL("+decl.index+",\""+decl.identifier+"\");";
 			if(statement instanceof BlockStatement stat) {
 				BlockStatement blockStatement=stat;

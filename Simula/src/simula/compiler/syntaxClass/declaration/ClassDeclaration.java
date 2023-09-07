@@ -556,9 +556,9 @@ permits StandardClass, PrefixedBlockDeclaration {
 	 * 
 	 * @return the number of labels in this class
 	 */
+	@Override
 	int getNlabels() {
-		if (hasNoRealPrefix())
-			return (labelList.size());
+		if (hasNoRealPrefix()) return (labelList.size());
 		return (labelList.size() + getPrefixClass().getNlabels());
 	}
 
