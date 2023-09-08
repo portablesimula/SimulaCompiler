@@ -97,10 +97,6 @@ final class SimulaCodeTransform {}
 //    			//
 //    			int tableSize=getConst(prevElement); prevElement=null;
 //				if(Option.TRACE_REPAIRING) Util.TRACE("SimulaCodeTransform.accept: Define TableSwitch "+tableSize);
-//				if(tableSize < 1){
-//					tableSize=1;
-//					//Util.IERR("");
-//				}
 //				cases=new Vector<SwitchCase>();
 //				for(int i=1;i<=tableSize;i++) {
 //    				cases.add(SwitchCase.of(i,builder.newLabel()));
