@@ -240,15 +240,16 @@ public final class RunSingleTest {
 //		Option.TRACE_CODING=true;
 		Option.GNERATE_LINE_CALLS=true;
 
-		Option.USE_FILE_CLASS_API=1;
-		//Option.LIST_INPUT_INSTRUCTION_LIST=true;
-		//Option.LIST_REPAIRED_INSTRUCTION_LIST=true;
-		//Option.TRACE_REPAIRING_INPUT=true;
-		//Option.TRACE_REPAIRING=true;
-		//Option.TRACE_REPAIRING_OUTPUT=true;
+		// Byte code engineering Options
+//		Option.USE_FILE_CLASS_API=1;
+//		Option.LIST_INPUT_INSTRUCTION_LIST=true;
+//		Option.LIST_REPAIRED_INSTRUCTION_LIST=true;
+//		Option.TRACE_REPAIRING_INPUT=true;
+//		Option.TRACE_REPAIRING=true;
+//		Option.TRACE_REPAIRING_OUTPUT=true;
 
 		Global.packetName="simulaTestBatch";
-		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
+//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
 //		Global.extLib="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/sim/bin";
 		
