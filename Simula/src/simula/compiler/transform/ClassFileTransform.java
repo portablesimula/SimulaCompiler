@@ -38,8 +38,6 @@ public class ClassFileTransform {
         if(Option.TRACE_REPAIRING_INPUT) Util.TRACE("ClassFileTransform.doRepairSingleByteCode: Input="+inputFileName);
         Util.IERR("UN-COMMENT FOLLOWING LINES ...");
 //		ClassModel classModel = Classfile.parse(bytes);
-//		
-//
 //		Predicate<MethodModel> filter = model -> (model.methodName().equalsString("_STM"));
 //		ClassTransform transform = ClassTransform.transformingMethodBodies(filter, new SimulaCodeTransform());
 //		if(transform != null) {

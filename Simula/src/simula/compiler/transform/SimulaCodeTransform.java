@@ -7,16 +7,20 @@
  */
 package simula.compiler.transform;
 
-import java.lang.constant.ConstantDesc;
 import java.util.List;
 import java.util.Vector;
 
+import java.lang.constant.ConstantDesc;
 //import java.lang.classfile.CodeBuilder;
 //import java.lang.classfile.CodeElement;
 //import java.lang.classfile.CodeTransform;
 //import java.lang.classfile.Label;
-//import java.lang.classfile.impl.LabelContext;
-//import java.lang.classfile.instruction.*;
+//
+//import java.lang.classfile.instruction.ConstantInstruction;
+//import java.lang.classfile.instruction.InvokeInstruction;
+//import java.lang.classfile.instruction.LabelTarget;
+//import java.lang.classfile.instruction.SwitchCase;
+
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
@@ -59,14 +63,13 @@ import simula.compiler.utilities.Util;
  *    LABEL (pseudo instruction)
  * </pre>
  */
-final class SimulaCodeTransform { // implements CodeTransform {
-	private static final boolean DEBUG=true;
-	
-    // ================================= UN-COMMENT FOLLOWING LINES ...
-	
+
+final class SimulaCodeTransform {}
+// UN-COMMENT FOLLOWING LINES ...
+//final class SimulaCodeTransform implements CodeTransform {
+//	
 //	private List<SwitchCase> cases;
 //	private CodeElement prevElement;
-//	private LabelContext labelContext;
 //	
 //    @Override
 //	public void atEnd(CodeBuilder builder) {
@@ -78,7 +81,6 @@ final class SimulaCodeTransform { // implements CodeTransform {
 //    
 //    @Override
 //    public void accept(CodeBuilder builder, CodeElement element) {
-//    	labelContext=(LabelContext) builder;
 //        if(Option.TRACE_REPAIRING_INPUT) Util.TRACE("SimulaCodeTransform.accept: Input "+element);
 //        //Util.IERR("");
 //    	if(element instanceof InvokeInstruction instr) {
@@ -101,16 +103,12 @@ final class SimulaCodeTransform { // implements CodeTransform {
 //				}
 //				cases=new Vector<SwitchCase>();
 //				for(int i=1;i<=tableSize;i++) {
-////    				cases.add(new SwitchCaseImpl(i,labelContext.newLabel()));
-//    				cases.add(SwitchCase.of(i,labelContext.newLabel()));
+//    				cases.add(SwitchCase.of(i,builder.newLabel()));
 //    			}
 //    			// Build the TableSwitch Instruction
-//    			Label defaultTarget=labelContext.newLabel(); // beginning of the default handler block.
+//    			Label defaultTarget=builder.newLabel(); // beginning of the default handler block.
 //				int lowValue=1; // the minimum key value.
 //    			int highValue=cases.size(); // the maximum key value.
-////				TableSwitchInstruction tableSwitch=TableSwitchInstruction.of(lowValue, highValue, defaultTarget, cases);
-////    	        if(Option.TRACE_REPAIRING_OUTPUT) Util.Trace("SimulaCodeTransform.accept: Output "+tableSwitch.getClass().getSimpleName()+'='+tableSwitch);
-////    			builder.with(tableSwitch);
 //				if(Option.TRACE_REPAIRING_OUTPUT) Util.TRACE("SimulaCodeTransform.accept: Output TableSwitch");
 //				if(Option.TRACE_REPAIRING_OUTPUT) Util.TRACE("SimulaCodeTransform.accept: Output defaultTarget="+defaultTarget);
 //				builder.tableswitch(lowValue, highValue, defaultTarget, cases)
@@ -156,9 +154,9 @@ final class SimulaCodeTransform { // implements CodeTransform {
 //    	}
 //    	throw new RuntimeException("Expected ConstantInstruction, GOT "+element);
 //    }
-
-    @Override
-    public String toString() {
-    	return("SimulaCodeTransform");
-    }
-}
+//
+//    @Override
+//    public String toString() {
+//    	return("SimulaCodeTransform");
+//    }
+//}
