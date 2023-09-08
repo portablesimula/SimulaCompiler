@@ -82,7 +82,6 @@ final class SimulaCodeTransform {}
 //    @Override
 //    public void accept(CodeBuilder builder, CodeElement element) {
 //        if(Option.TRACE_REPAIRING_INPUT) Util.TRACE("SimulaCodeTransform.accept: Input "+element);
-//        //Util.IERR("");
 //    	if(element instanceof InvokeInstruction instr) {
 //    		if(instr.name().equalsString("_JUMPTABLE")) {
 //    	        // *******************************************************************************
