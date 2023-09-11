@@ -8,6 +8,9 @@
 package simula.compiler.utilities;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -291,63 +294,74 @@ public final class Util {
 		return((int)res);
 	}
   
-//	//*******************************************************************************
-//	//*** Reflection Utilities
-//	//*******************************************************************************
-//  
-//	public static void listClass(final Class<?> c) {
-//		listConstructors(c);
-//		listMethods(c);	
-//	}
-//	
-//	private static void listMethods(final Class<?> c) {
-//		Method[] allMethods = c.getDeclaredMethods();
-//		for(Method m:allMethods) listMethod(m);
-//	}
-//	
-//	private static void listConstructors(final Class<?> c) {
-//		Constructor<?>[] allConstructors = c.getConstructors();
-//		for (Constructor<?> constructor : allConstructors)
-//			listConstructor(constructor);
-//	}
-//	
-//	private static void listConstructor(final Constructor<?> m)	{
-//		System.out.format("%s%n", m.toGenericString());
-//		String  fmt = "%24s: %s%n";
-//		Class<?>[] pType  = m.getParameterTypes();
-//		Type[] gpType = m.getGenericParameterTypes();
-//		for (int i = 0; i < pType.length; i++) {
-//			System.out.format(fmt,"ParameterType", pType[i]);
-//			System.out.format(fmt,"GenericParameterType", gpType[i]);
-//		}
-//		Class<?>[] xType  = m.getExceptionTypes();
-//		Type[] gxType = m.getGenericExceptionTypes();
-//		for (int i = 0; i < xType.length; i++) {
-//			System.out.format(fmt,"ExceptionType", xType[i]);
-//			System.out.format(fmt,"GenericExceptionType", gxType[i]);
-//		}
-//	}
-//	
-//	private static void listMethod(final Method m) {
-//		System.out.format("%s%n", m.toGenericString());
-//		String  fmt = "%24s: %s%n";
-//	
-//		System.out.format(fmt, "ReturnType", m.getReturnType());
-//		System.out.format(fmt, "GenericReturnType", m.getGenericReturnType());
-//	
-//		Class<?>[] pType  = m.getParameterTypes();
-//		Type[] gpType = m.getGenericParameterTypes();
-//		for (int i = 0; i < pType.length; i++) {
-//	        System.out.format(fmt,"ParameterType", pType[i]);
-//			System.out.format(fmt,"GenericParameterType", gpType[i]);
-//		}
-//		Class<?>[] xType  = m.getExceptionTypes();
-//		Type[] gxType = m.getGenericExceptionTypes();
-//		for (int i = 0; i < xType.length; i++) {
-//			System.out.format(fmt,"ExceptionType", xType[i]);
-//			System.out.format(fmt,"GenericExceptionType", gxType[i]);
-//		}
-//	}
+
+	// ***************************************************************
+	// *** LIST .class file
+	// ***************************************************************
+	/**
+	 * Print a .class file listing.
+	 * 
+	 * @param classFileName the .class file name
+	 */
+	public static void doListClassFile(final String classFileName) {
+		try {
+			execute("javap", "-c", "-l", "-p", "-s", "-verbose", classFileName);
+		} catch (IOException e) {
+			Util.IERR("Impossible", e);
+		}
+	}
+
+	// ***************************************************************
+	// *** EXECUTE OS COMMAND
+	// ***************************************************************
+	/**
+	 * Execute OS Command
+	 * @param cmd command vector
+	 * @return return value from the OS
+	 * @throws IOException if something went wrong
+	 */
+	public static int execute(final Vector<String> cmd) throws IOException {
+		String[] cmds = new String[cmd.size()];
+		cmd.copyInto(cmds);
+		return (execute(cmds));
+	}
+
+	/**
+	 * Execute an OS command
+	 * 
+	 * @param cmdarray command array
+	 * @return exit value
+	 * @throws IOException if an I/O error occurs
+	 */
+	public static int execute(final String... cmdarray) throws IOException {
+		Runtime runtime = Runtime.getRuntime();
+		if (Option.verbose) {
+			String line = "";
+			for (int i = 0; i < cmdarray.length; i++)
+				line = line + " " + cmdarray[i];
+			Util.println("Execute: " + line);
+		}
+		Process process = runtime.exec(cmdarray);
+		InputStream err = process.getErrorStream();
+		InputStream inp = process.getInputStream();
+		StringBuilder error = new StringBuilder();
+		while (process.isAlive()) {
+			while (err.available() > 0) {
+				char c = (char) err.read();
+				System.err.append(c);
+				error.append(c);
+			}
+			while (inp.available() > 0) {
+				if (Global.console != null)
+					Global.console.write("" + (char) inp.read());
+				else
+					System.out.append((char) inp.read());
+			}
+		}
+		if (error.length() > 0)
+			Util.error(error.toString());
+		return (process.exitValue());
+	}
   
   
 }

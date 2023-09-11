@@ -20,7 +20,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.util.CheckClassAdapter;
 
-import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
@@ -65,7 +64,7 @@ public final class ByteCodeEngineering {
 			if (Option.TRACE_REPAIRING)
 				Util.println("ByteCodeEngineering.doRepairSingleByteCode: Load " + classFileName);
 			if (LIST_ASM_CODE)
-				SimulaCompiler.doListClassFile(classFileName);
+				Util.doListClassFile(classFileName);
 			inputStream = new FileInputStream(classFileName);
 			ClassReader classReader = new ClassReader(inputStream);
 			ClassWriter classWriter = new ExtendedClassWriter(classReader, ClassWriter.COMPUTE_FRAMES);
@@ -85,7 +84,7 @@ public final class ByteCodeEngineering {
 			byte[] b2 = classWriter.toByteArray(); // b2 represents the repaired version of the input class
 			dumpToFile(b2, classFileName);
 			if (LIST_ASM_CODE)
-				SimulaCompiler.doListClassFile(classFileName);
+				Util.doListClassFile(classFileName);
 		} catch (Exception e) {
 			Util.println("ByteCodeEngineering FAILED for " + classFileName);
 			e.printStackTrace();

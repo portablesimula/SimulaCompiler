@@ -389,7 +389,7 @@ public final class SimulaCompiler {
 					Util.println("------------  LIST ByteCode Before Engineering  ------------");
 					for (GeneratedJavaClass javaClass : Global.generatedJavaClass) {
 						String classFile = javaClass.getClassOutputFileName();
-						doListClassFile(classFile);
+						Util.doListClassFile(classFile);
 					}
 				}
 				for (GeneratedJavaClass javaClass : Global.generatedJavaClass) {
@@ -406,7 +406,7 @@ public final class SimulaCompiler {
 					Util.println("------------  LIST ByteCode After Engineering  ------------");
 					for (GeneratedJavaClass javaClass : Global.generatedJavaClass) {
 						String classFile = javaClass.getClassOutputFileName();
-						doListClassFile(classFile);
+						Util.doListClassFile(classFile);
 					}
 				}
 			} else {
@@ -450,7 +450,7 @@ public final class SimulaCompiler {
 				if (Option.SOURCE_FILE.length() > 0) {
 					cmds.add(Option.SOURCE_FILE);
 				}
-				int exitValue3 = execute(cmds);
+				int exitValue3 = Util.execute(cmds);
 				if (Option.verbose)
 					Util.println("END Execute .jar File. Exit value=" + exitValue3);
 				if(exitValue3 != 0) {
@@ -550,7 +550,7 @@ public final class SimulaCompiler {
 		for (GeneratedJavaClass javaClass : Global.generatedJavaClass) {
 			cmds.add(javaClass.javaOutputFile.toString()); // Add .java Files
 		}
-		int exitValue = execute(cmds);
+		int exitValue = Util.execute(cmds);
 		if (Option.TRACING) {
 			Util.println("END Generate .class Output Code. Exit value=" + exitValue);
 			for (GeneratedJavaClass javaClass : Global.generatedJavaClass)
@@ -749,74 +749,6 @@ public final class SimulaCompiler {
 					e.printStackTrace();
 				}
 		}
-	}
-
-	// ***************************************************************
-	// *** LIST .class file
-	// ***************************************************************
-	/**
-	 * Print a .class file listing.
-	 * 
-	 * @param classFileName the .class file name
-	 */
-	public static void doListClassFile(final String classFileName) {
-		try {
-			execute("javap", "-c", "-l", "-p", "-s", "-verbose", classFileName);
-		} catch (IOException e) {
-			Util.IERR("Impossible", e);
-		}
-	}
-
-	// ***************************************************************
-	// *** EXECUTE OS COMMAND
-	// ***************************************************************
-	/**
-	 * Execute OS Command
-	 * @param cmd command vector
-	 * @return return value from the OS
-	 * @throws IOException if something went wrong
-	 */
-	private static int execute(final Vector<String> cmd) throws IOException {
-		String[] cmds = new String[cmd.size()];
-		cmd.copyInto(cmds);
-		return (execute(cmds));
-	}
-
-	/**
-	 * Execute an OS command
-	 * 
-	 * @param cmdarray command array
-	 * @return exit value
-	 * @throws IOException if an I/O error occurs
-	 */
-	public static int execute(final String... cmdarray) throws IOException {
-		Runtime runtime = Runtime.getRuntime();
-		if (Option.verbose) {
-			String line = "";
-			for (int i = 0; i < cmdarray.length; i++)
-				line = line + " " + cmdarray[i];
-			Util.println("Execute: " + line);
-		}
-		Process process = runtime.exec(cmdarray);
-		InputStream err = process.getErrorStream();
-		InputStream inp = process.getInputStream();
-		StringBuilder error = new StringBuilder();
-		while (process.isAlive()) {
-			while (err.available() > 0) {
-				char c = (char) err.read();
-				System.err.append(c);
-				error.append(c);
-			}
-			while (inp.available() > 0) {
-				if (Global.console != null)
-					Global.console.write("" + (char) inp.read());
-				else
-					System.out.append((char) inp.read());
-			}
-		}
-		if (error.length() > 0)
-			Util.error(error.toString());
-		return (process.exitValue());
 	}
 
 }

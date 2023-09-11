@@ -48,7 +48,6 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.ConsolePanel;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
@@ -545,7 +544,7 @@ public class SimulaEditor extends JFrame {
 //				String[] cmds= {"java","-jar",jarFile.toString(),"-useConsole"};
 				String userDir=jarFile.getParentFile().getParent();
 				String[] cmds= {"java","-jar",jarFile.toString(),"-useConsole","-userDir",userDir};
-				try { SimulaCompiler.execute(cmds);
+				try { Util.execute(cmds);
 				} catch (IOException e) { Util.IERR("Impossible",e); }
 			}
 		}).start();
