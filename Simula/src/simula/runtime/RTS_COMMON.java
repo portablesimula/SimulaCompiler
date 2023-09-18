@@ -469,7 +469,7 @@ public final class RTS_COMMON {
 	 * @return System property "java.vm.specification.version"
 	 */
 	static String getJavaID() {
-		return ("JVM version " + System.getProperty("java.vm.specification.version"));
+		return ("JDK version " + System.getProperty("java.version"));
 	}
 
 	// *********************************************************************

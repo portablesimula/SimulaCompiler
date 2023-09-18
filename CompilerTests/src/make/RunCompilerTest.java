@@ -105,7 +105,7 @@ public final class RunCompilerTest {
 		// String name="/simulaRTS_Examples/Sect-4-2-ArrayParameter.sim";
 		// String name="/simulaRTS_Examples/Sect-4-3-ProcedureAsParameter.sim";
 		// String name="/simulaRTS_Examples/Sect-5-SomeExpressions.sim";
-		 String name="/simulaRTS_Examples/Sect-6-1-GotoStatement.sim";
+		// String name="/simulaRTS_Examples/Sect-6-1-GotoStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-2-ForStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-3-ConnectionStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-4-SwitchStatement.sim";
@@ -209,7 +209,7 @@ public final class RunCompilerTest {
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
-		// String name="/simple/adHoc06.sim";
+		 String name="/simple/adHoc06.sim";
 		// String name="/simple/adHoc26.sim";
 		// String name="/simple/adHoc51.sim";
 		// String name="/simple/adHoc54.sim";

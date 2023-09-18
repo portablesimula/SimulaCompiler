@@ -1,14 +1,7 @@
-BEGIN
-      class idpack2;
-      begin character idhi,idlo;
-            short integer line;
-%            ref(idpack2) next;
-      end;
-
-		    idpack2 class protpack2; ;
-		
-            procedure chainVis(hidp); boolean hidp;
-            inspect (if hidp then new idpack2 else new protpack2) do begin
-%                  line:=351; idhi:='c'; idlo:='b';
-            end;
-END
+begin
+	integer i;
+	outtext("HelloWorld: ");
+	i:=444;
+	outint(i,0);
+	outimage;
+end;

@@ -201,9 +201,7 @@ public class SimulaEditor extends JFrame {
 	 * @return the Java ID string
 	 */
 	private static String getJavaID() {
-//		String javaID="Java version "+System.getProperty("java.version");
-        String javaID="JVM version "+System.getProperty("java.vm.specification.version");
-        //if(RTOption.USE_VIRTUAL_THREAD) javaID=javaID+"-Virtual Threads";
+		String javaID="Java version "+System.getProperty("java.version");
         return(javaID);
 	}
 

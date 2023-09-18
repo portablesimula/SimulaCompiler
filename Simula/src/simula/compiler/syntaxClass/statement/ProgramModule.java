@@ -12,6 +12,7 @@ import simula.compiler.syntaxClass.Type;
 import simula.compiler.syntaxClass.declaration.ClassDeclaration;
 import simula.compiler.syntaxClass.declaration.ConnectionBlock;
 import simula.compiler.syntaxClass.declaration.Declaration;
+import simula.compiler.syntaxClass.declaration.DeclarationScope;
 import simula.compiler.syntaxClass.declaration.ExternalDeclaration;
 import simula.compiler.syntaxClass.declaration.MaybeBlockDeclaration;
 import simula.compiler.syntaxClass.declaration.PrefixedBlockDeclaration;
@@ -68,7 +69,7 @@ public final class ProgramModule extends Statement {
 	/**
 	 * The module declaration.
 	 */
-	public final Declaration module;
+	public final DeclarationScope module;
 
 	/**
 	 * Returns the module identifier.
@@ -101,7 +102,7 @@ public final class ProgramModule extends Statement {
 	 */
 	public ProgramModule() {
 		super(0);
-		Declaration module=null;
+		DeclarationScope module=null;
 		sysin=new VariableExpression("sysin");
 		sysout=new VariableExpression("sysout");
 		try	{
@@ -151,7 +152,7 @@ public final class ProgramModule extends Statement {
   
 	@Override
 	public void doJavaCoding() { module.doJavaCoding(); }
-	
+
 	@Override
 	public void print(final int indent) { module.print(0); }
 
