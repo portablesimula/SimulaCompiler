@@ -1,0 +1,540 @@
+Drawing("Elevator simulation",1000,1000) begin 
+-----------------------------------------------------------------------------------------
+-- This is a simulation model of a number of elevators in an office buiding.
+--
+-- Typical questions could be:
+--
+--   1) How many elevators do we need in this building to avoid congestion,
+--      taking into consideration the expected arrival intervals of employees.
+--
+--   2) Given number of elevators,
+--      what is the average and maximum waiting times for people in the building.
+--
+-- Speed and capacity of the elevators is also vital for the flow of the system.
+-- A more sofisticated model would have to try to simulate the possibility of
+-- different elevators running with different strategies.
+-- 
+-- This is an implementation written in the 70's and it is fraught with logical errors.
+-- If you look closely at the graphical output, you will see that some request
+-- for a lift is not satisfied even if a vacant Elevator is on the same floor
+--
+-- Feel free to correct this program.
+--
+-----------------------------------------------------------------------------------------
+integer	nPersions=500;       -- Number of persions in Simulation
+integer	nFloors=10;          -- Number of floors
+integer	nLifts=8;            -- Number of lifts
+integer maxload=9;           -- Max load in one lift
+real getinTime=0.002;        -- Time to get into lift (average)
+real getoutTime=0.002;       -- Time to get out of lift
+real doorSlamTime=0.001;     -- Lift Door slam time
+real floorToFloorTime=0.003; -- Floor to floor time for lift
+real accelerationTime=0.001; -- Acceleration time for lift
+real decelerationTime=0.001; -- Deceleration time for lift
+real startTime=7.0;          -- Starting time in the morning
+real endTime=19.0;           -- Ending time in the evening
+
+
+Simulation begin
+    integer neutral=0, wayup=1, waydown=2; -- Elevator States
+    real maxWaitingTime;
+    real totalWaitingTime;
+    integer U1, U2, U3, U4;  -- Random seeds
+    ref(Elevator) array lifts(1:nLifts);
+    ref(Head) idleQueue;
+    ref(Floor) array floors(0:nFloors);
+    integer nPersionArrived,nPersionleft,nToLunch,nFromLunch;
+
+    procedure assert(line,cond); integer line; boolean cond; begin
+        if not cond then begin
+            outtext("Assertion FAILED at Source line " & edit(line)); outimage;
+            while true do; -- Keep graphic window
+            error("Assertion FAILED at Source line " & edit(line));
+        end;
+    end;
+          
+    procedure trace(msg); text msg; begin
+      	outtext("Simulated time " & edfix(time,2) & ": " & msg); outimage;
+    end;
+
+    ----------------------------------
+    --- Process: Person
+    ----------------------------------
+    Process class Person(officeFloor); integer officeFloor; begin
+        ref(Floor) currentFloor;   -- Current floor for this Person
+        integer destination; -- Destination floor when using a lift
+        ref(Elevator) lift;  -- Current lift for this Person
+        real arrivalTime;    -- Arrival time for this Person
+        real lunchTime;      -- Lunch time for this Person
+        real leaveTime;      -- Leave time for this Person
+
+        ref(Elevator) procedure getLiftGoingUp; begin
+            ref(Elevator) lift;
+            trace("Get lift going up at floor " & edit(currentFloor.no) & " nLifts=" & edit(currentFloor.lifts.cardinal));
+            lift:- currentFloor.lifts.first;
+            while lift =/= none and then lift.state ne waydown and then not lift.space do
+                lift:- lift.suc;
+            trace("Get lift going up at floor " & edit(currentFloor.no) & " returns Lift=" & (if lift == none then "NONE" else edit(lift.no)));
+            getLiftGoingUp:- lift;
+        end;
+
+        ref(Elevator) procedure getLiftGoingDown; begin
+            ref(Elevator) lift;
+            trace("Get lift going down at floor " & edit(currentFloor.no) & " nLifts=" & edit(currentFloor.lifts.cardinal));
+            lift:- currentFloor.lifts.first;
+            while lift =/= none and then lift.state ne wayup and then not lift.space do
+               lift:- lift.suc;
+            getLiftGoingDown:- lift;
+        end;
+
+        procedure personEntersLift(no); integer no; begin
+            ref(Elevator) lift; lift:-lifts(no);
+            if lift.currentFloor.no > 0 then lift.currentFloor.nPerson:=lift.currentFloor.nPerson-1;
+            trace("Person at floor " & edit(currentFloor.no) & " Enters Lift " & edit(no) & " at floor " & edit(lift.position));
+            assert(sourceline,lift.currentFloor == currentFloor);
+        end;
+
+        procedure personLeavesLift(no); integer no; begin
+            ref(Elevator) lift; lift:-lifts(no);
+            currentFloor:-lift.currentFloor;
+            if lift.currentFloor.no > 0 then lift.currentFloor.nPerson:=lift.currentFloor.nPerson+1;
+            trace("Person at floor " & edit(currentFloor.no) & " Leaves Lift " & edit(no) & " at floor " & edit(lift.position));
+            assert(sourceline,lift.currentFloor == currentFloor);
+        end;
+        
+        procedure updateWaitingTimes(dWait); real dWait; begin
+            totalWaitingTime:= totalWaitingTime + dWait;
+            if dWait > maxWaitingTime then maxWaitingTime:=dWait;
+        end;
+
+        ------------------------------------------
+        --- Person - Story board (simulation events)
+        ------------------------------------------
+        arrivalTime:= time; nPersionArrived:=nPersionArrived+1;
+        leaveTime:= arrivalTime + 8.0 + uniform(-1.0, 1.0, U4);
+        lunchTime:= arrivalTime + 4.0 + uniform(-0.5, 1.0, U2);
+        
+        -- Person leaves floor 0 bound for officeFloor
+        currentFloor:- floors(0); destination:= officeFloor;
+        trace("Person request lift at floor " & edit(0));
+        lift:- getLiftGoingUp;
+        while lift == none or else not lift.space do begin
+            currentFloor.activateIdleLift;
+            trace("Person Enter queue going up at floor " & edit(0));
+            wait(currentFloor.personsGoingUp);   ! Enter queue going up;
+            out; lift:- getLiftGoingUp;
+        end;
+        updateWaitingTimes(time-arrivalTime);
+        personEntersLift(lift.no);
+        into(lift.load);
+        hold(getinTime);
+         
+        lift.PushBtn(destination);
+        activate lift after current;
+        passivate; out;
+        hold(getoutTime);
+         
+        -- Follow Elevator, check every floor for possible exit;
+        personLeavesLift(lift.no);
+        activate lift after current;
+        reactivate current at lunchTime;
+         
+        -- Person leaves floor officeFloor bound for lunch at ground floor
+        currentFloor:- floors(officeFloor);
+        destination:= 0; nToLunch:=nToLunch+1;
+        trace("Person request lift at floor " & edit(officeFloor));
+        lift:- getLiftGoingDown;
+        while lift == none or else not lift.space do begin
+           currentFloor.activateIdleLift;
+           wait(currentFloor.personsGoingDown); ! Enter queue going down;
+           out; lift:- getLiftGoingDown; end;
+        updateWaitingTimes(time-lunchTime);
+        personEntersLift(lift.no);
+        into(lift.load);
+        hold(getinTime);
+         
+        lift.PushBtn(destination);
+        activate lift after current;
+        passivate; out;
+        hold(getoutTime);
+         
+        personLeavesLift(lift.no);
+        activate lift after current;
+        reactivate current at lunchTime + 0.5;
+        
+        -- Person leaves ground floor bound for office floor
+        currentFloor:- floors(0); destination:= officeFloor;
+        trace("Person request lift at floor " & edit(0));
+        lift:- getLiftGoingUp;
+        while lift == none or else not lift.space do begin 
+           currentFloor.activateIdleLift;
+           wait(currentFloor.personsGoingUp); ! Enter queue going up;
+           out; lift:- getLiftGoingUp;
+        end;
+        updateWaitingTimes(time-lunchTime-0.5);
+        personEntersLift(lift.no);
+        into(lift.load);
+        hold(getinTime);
+         
+        lift.PushBtn(destination);
+        activate lift after current;
+        passivate; out;
+        hold(getoutTime);
+         
+        personLeavesLift(lift.no);
+        nFromLunch:=nFromLunch+1;
+        activate lift after current;
+        reactivate current at leaveTime;
+         
+        -- Person leaves floor officeFloor bound for exit at ground floor
+        currentFloor:- floors(officeFloor); destination:= 0;
+        trace("Person request lift at floor " & edit(officeFloor));
+        lift:- getLiftGoingDown;
+        while lift == none or else not lift.space do begin
+           currentFloor.activateIdleLift;
+           wait(currentFloor.personsGoingDown); ! Enter queue going down;
+           out; lift:- getLiftGoingDown;
+        end;
+        updateWaitingTimes(time-leaveTime);
+        personEntersLift(lift.no);
+        into(lift.load);
+        hold(getinTime);
+      
+        lift.PushBtn(destination);
+        activate lift after current;
+        passivate; out;
+        hold(getoutTime);
+         
+        personLeavesLift(lift.no);
+        nPersionleft:=nPersionleft+1;
+        activate lift after current;
+    end of Person;
+
+
+    ----------------------------------
+    --- Process: Elevator
+    ----------------------------------
+    Process class Elevator(no); integer no; begin
+        integer position, state, goal;
+        boolean doorOpened;
+        boolean array Button(0:nFloors);
+        ref(Head) load;
+      
+        ref(Floor) procedure currentFloor; currentFloor:- floors(position);
+        boolean procedure space; space:= load.cardinal < maxload;
+        procedure PushBtn(sn); integer sn; Button(sn):= true;
+
+        -----------------------------------------------
+        --- Elevator - Story board (simulation events)
+        -----------------------------------------------
+        load:- new Head;
+        state:= neutral;
+        into(floors(0).lifts);
+        while true do begin
+            -- Elevator is empty at this stage, at least the first time;
+            trace("Lift " & edit(no) & " at position " & edit(position));
+            while state = neutral do begin
+               goal:= anyCallsUpFromFloor(position);
+               if goal>=0 then state:= wayup else begin
+                  goal:= anyCallsDownFromFloor(position);
+                  if goal>=0 then state:= waydown else begin
+                     goal:= anyCallsUpFromFloor(0);
+                     if goal>=0 then state:= waydown else begin
+                        goal:= anyCallsDownFromFloor(nFloors);
+                        if goal>=0 then state:= wayup;
+                     end;
+                  end;
+               end;
+               if state = neutral then wait(idleQueue); out;
+            end;
+            if goal <> position then begin
+                out;
+                if doorOpened then begin
+      	            trace("Lift " & edit(no) & " close door");
+                    doorOpened:= false;
+                    hold(doorSlamTime);
+                end; 
+                hold(accelerationTime);
+              
+                if state = waydown then begin
+                    while position > goal do begin
+                        trace("Lift " & edit(no) & " at position " & edit(position) & " bound for " & edit(goal));
+                        hold(floorToFloorTime);
+                        position:= position-1;
+                        if not floors(position).personsGoingDown.empty then goal:= position;
+                    end;
+                end else
+                if state = wayup then begin
+                    while position < goal do begin
+                        trace("Lift " & edit(no) & " at position " & edit(position) & " bound for " & edit(goal));
+                        hold(floorToFloorTime);
+                        position:= position+1;
+                        if not floors(position).personsGoingUp.empty then goal:= position;
+                    end;
+                end;
+                hold(decelerationTime);
+            end;
+            into(currentFloor.lifts);
+      	    trace("Lift " & edit(no) & " at position " & edit(position));
+            if not doorOpened then begin
+      	        trace("Lift " & edit(no) & " open door");
+                hold(doorSlamTime);
+                doorOpened:= true;
+            end;
+            -- Person leaving here exit Elevator;
+            Button(position):= false;
+            begin ref(Person) p;
+                p:- load.first;
+                while p =/= none do begin
+                    if p.destination=position then begin
+                        activate p after current;
+                        passivate;
+                        p:- load.first;
+                    end else p:- p.suc;
+                end;
+            end;
+            -- Person entering Elevator here;
+            if state=wayup then begin
+                while (not currentFloor.personsGoingUp.empty) and space do begin
+                    inspect currentFloor.personsGoingUp do begin
+                       activate first after current;
+                       passivate;
+                    end;
+                end;
+            end else
+            if state=waydown then begin
+                while (not currentFloor.personsGoingDown.empty) and space do begin
+                    inspect currentFloor.personsGoingDown do begin
+                        activate first after current;
+                        passivate;
+                    end;
+                end;
+            end;
+            if not load.empty then begin
+                integer i;
+                if state=wayup then begin
+                    goal:= nFloors+1;
+                    for i:= nFloors step -1 until position+1 do if Button(i) then goal:= i;
+                    if goal > nFloors then begin
+                        for i:= 0 step 1 until position-1 do if Button(i) then goal:= i;
+                        state:= waydown;
+                    end;
+                end else
+                if state=waydown then begin
+                    goal:= -1;
+                    for i:= 0 step 1 until position-1 do if Button(i) then goal:= i;
+                    if goal < 0 then begin
+                        for i:= nFloors step -1 until position+1 do if Button(i) then goal:= i;
+                        state:= wayup;
+                     end;
+                end;
+            end else state:= neutral;
+        end while;
+    end class Elevator;
+
+
+    ----------------------------------
+    --- Class: Floor
+    ----------------------------------
+    class Floor(no); integer no; begin
+        integer nPerson; -- on this floor
+        ref(Head) personsGoingUp;   -- Persons going up;
+        ref(Head) personsGoingDown; -- Persons going down;
+        ref(Head) lifts; -- Set of Lifts currently on this floor
+        
+        procedure activateIdleLift;
+        if not idleQueue.empty then begin
+            ref(Process) lift,nearest;
+            -- Search for idle lift at this floor
+            for lift:-idleQueue.first, lift.suc while lift =/= none do begin
+                if lift qua Elevator.no = no then goto E;
+            end;
+            lift:-idleQueue.first;
+         E: lift.out;
+         
+            trace("activateIdleLift " & edit(lift qua Elevator.no));
+            trace("current is " & (if current is Person then "Person" else "Elevator"));
+            assert(sourceline,current =/= none);
+            assert(sourceline,current is Person);
+            activate lift after current;
+            
+        end else trace("activateIdleLift: idleQueue is empty");
+        
+        personsGoingUp:- new Head; personsGoingDown:- new Head;
+        lifts:- new Head;
+    end class Floor;
+
+
+    -------------------------------------
+    --- procedure: anyCallsUpFromFloor
+    -------------------------------------
+    integer procedure anyCallsUpFromFloor(n); integer n; begin
+        integer j; anyCallsUpFromFloor:= -1;
+        for j:= n step 1 until nFloors do
+        if floors(j).personsGoingUp.first =/= none then begin
+            anyCallsUpFromFloor:= j; goto E;
+        end;
+    E:end;
+
+
+    -------------------------------------
+    --- procedure: anyCallsDownFromFloor
+    -------------------------------------
+    integer procedure anyCallsDownFromFloor(n); integer n; begin
+        integer j; anyCallsDownFromFloor:= -1;
+        for j:= n step -1 until 0 do
+        if floors(j).personsGoingDown.first =/= none then begin
+            anyCallsDownFromFloor:= j; goto E;
+        end;
+    E:end;
+    
+        
+    ----------------------------------
+    --- Process: Reporter
+    ----------------------------------
+    Process class Reporter; begin 
+        integer lb=150;    -- Shaft left border
+        integer width=40;  -- Shaft width
+        integer ffdist=70; -- floors to floor distance
+        real prevTime,timeStep; -- Used to synchronize time
+        ref(TextElement) simTimeLabel,maxWaitLabel,meanWaitLabel,totalWaitLabel;
+        ref(TextElement) arriveLabel,leftLabel,toLuchLabel,fromLunchLabel; 
+        ref(LiftCabin) array cabin(1:nLifts);
+        ref(TextElement) array UPs(0:nFloors);
+        ref(TextElement) array DNs(0:nFloors);
+        ref(TextElement) array CNT(0:nFloors);
+        
+        text procedure edNonZero(n); integer n;
+            edNonZero:-if n>0 then edit(n) else " ";
+
+        class LiftCabin(lift,x0,y0); ref(Elevator) lift; integer x0,y0; begin
+            integer width=30;
+            integer height=40;
+            ref(ShapeElement) cab;
+            ref(TextElement) lab;
+            procedure update; begin
+                integer y,xFloor;
+                xFloor:=nFloors-lift.position+1;
+                y:=160+(xFloor)*ffdist;
+                cab.instantMoveTo(x0,y);
+                lab.instantMoveTo(x0+10,y+30); 
+                lab.setText(edNonZero(lift.load.cardinal));
+            end;
+            cab:-drawRectangle(x0,y0,width,height);
+            lab:-drawText(" ",x0+10,y0+30); 
+        end;  
+      
+        procedure updateDrawing; begin
+            integer i,fl,idleLifts;
+            for i:=1 step 1 until nLifts do cabin(i).update;
+            for i:=0 step 1 until nFloors do begin
+                fl:=nFloors-i;
+                idleLifts:=idleLifts+floors(fl).lifts.cardinal;
+                if UPs(fl) =/= none then UPs(fl).setText(edNonZero(floors(fl).personsGoingUp.cardinal));
+                if DNs(fl) =/= none then DNs(fl).setText(edNonZero(floors(fl).personsGoingDown.cardinal));
+                if fl > 0 then CNT(fl).setText("in office " & edit(floors(fl).nPerson));
+            end; 
+            idleLifts:=idleLifts+idleQueue.cardinal; 
+            CNT(0).setText("idle lifts " & edit(idleLifts));
+        end;  
+
+        -----------------------------------------------
+        --- Reporter - Story board (simulation events)
+        -----------------------------------------------
+        setStroke(2.5); setFontStyleBold;
+        setDrawColor(black); setFontSize(24);
+        drawText("Simulated time",100,50);            simTimeLabel:-drawText(" ",300,50); 
+        drawText("Max waiting time",100,80);          maxWaitLabel:-drawText(" ",300,80); 
+        drawText("Mean waiting time",100,110);        meanWaitLabel:-drawText(" ",300,110); 
+        drawText("Total waiting time",100,140);       totalWaitLabel:-drawText(" ",300,140); 
+        drawText("Number of persons arrived",450,50); arriveLabel:-drawText(" ",750,50); 
+        drawText("Persons left for lunch",450,80);    toLuchLabel:-drawText(" ",750,80); 
+        drawText("Persons back from lunch",450,110);  fromLunchLabel:-drawText(" ",750,110); 
+        drawText("Number of persons left",450,140);   leftLabel:-drawText(" ",750,140); 
+        begin integer i,x,y;
+            x:=lb;
+            for i:=0 step 1 until nLifts do begin
+                drawLine(x,200,x,200+(nFloors+1)*ffdist); -- Vertikal
+                x:=x+width;
+            end;
+            y:=200;
+            for i:=0 step 1 until nFloors+1 do begin
+                drawLine(lb,y,lb+(nLifts*width),y); -- Horisontal
+                y:=y+ffdist;
+            end;
+            y:=200;
+            for i:=0 step 1 until nFloors do begin
+                integer flr,x0;
+                x0:=lb+(nLifts*width)+20; flr:=nFloors-i;
+                drawText("Floor " & edit(flr),50,y+60);
+                if flr ne nFloors then begin
+                    drawText("up",x0,y+40);
+                    UPs(flr):-drawText(" ",x0+40,y+40);
+                end;
+                if flr ne 0 then begin
+                    drawText("dn",x0,y+60);
+                    DNs(flr):-drawText(" ",x0+40,y+60);
+                end;
+                if flr > 0 then CNT(flr):-drawText("in office",x0+100,y+60);
+                if flr=0 then CNT(0):-drawText("Vacations:",x0+100,y+60);
+                y:=y+ffdist;
+            end;
+            for i:=1 step 1 until nLifts do begin
+                cabin(i) :- new LiftCabin(lifts(i),lb+width*(i-1)+5,200+(nFloors+1)*ffdist-40);
+            end;
+        end;      
+        prevTime:=clocktime; 
+        timeStep:=0.01; -- Seconds 
+        while true do begin 
+            simTimeLabel.setText(edtime(time));
+            maxWaitLabel.setText(edtime(maxWaitingTime));
+            meanWaitLabel.setText(edtime(totalWaitingTime/nPersionArrived));
+            totalWaitLabel.setText(edfix(totalWaitingTime,2));
+            arriveLabel.setText(edit(nPersionArrived));
+            leftLabel.setText(edit(nPersionleft));
+            toLuchLabel.setText(edit(nToLunch));
+            fromLunchLabel.setText(edit(nFromLunch));
+            hold(0.001); 
+            updateDrawing;
+            while clocktime < prevTime+timeStep do; 
+            prevTime:=prevTime+timeStep; 
+        end 
+    end; 
+
+    ----------------------------------
+    --- Simulation Main Program
+    ----------------------------------
+
+    hold(startTime);
+    activate new Reporter; 
+
+    begin -- Initiate global variables
+        integer j;
+        idleQueue:- new Head;
+        U1:=455470315;     -- Random seed 1
+        U2:=950423827;     -- Random seed 2
+        U3:=1602649445;    -- Random seed 3
+        U4:=660825717;     -- Random seed 4
+        for j:=0 step 1 until nFloors do floors(j):- new Floor(j);
+        for j:=1 step 1 until nLifts do begin
+            lifts(j):- new Elevator(j);
+            activate lifts(j);
+        end;
+        for j:=1 step 1 until nPersions do begin
+            real standardDeviation=0.5;
+            real persionActivationTime;
+            persionActivationTime:= normal(startTime+1.0, standardDeviation, U3);
+            activate new Person(randint(1,nFloors,U1)) at persionActivationTime;
+        end;
+    end;
+    
+    hold(endTime - time);
+  
+    outimage;
+    outtext("Total waiting time was: ");
+    outfix(totalWaitingTime,3,8); outimage;
+end Simulation;
+
+while true do; -- Keep graphic window
+
+end DRAWING

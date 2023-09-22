@@ -1,0 +1,71 @@
+begin
+%     -----------------------------------------------------------------------
+%     ---  Simula a.s.                                                    ---
+%     ---                                                                 ---
+%     ---                 U T I L I T Y   P R O G R A M S                 ---
+%     ---                                                                 ---
+%     ---                         H E X D U M P                           ---
+%     ---                                                                 ---
+%     -----------------------------------------------------------------------
+
+      ref(InByteFile) inpt; ! Input File ;
+
+      integer sequ; ! Input byte number ;
+      integer code; ! Current Record code ;
+      text prtpart;
+
+      procedure inputFile;
+      begin text F;
+            inpt:-new InByteFile("File");
+            if not inpt.open then
+            begin outimage; outtext("The File """); outtext(F);
+                  outtext(""" does not exist or is not accessible");
+                  outimage; outimage; terminate_program;
+            end;
+      end;
+
+
+      integer procedure inbyte;
+      begin inbyte:=inpt.inbyte; sequ:=sequ+1 end;
+
+      procedure prthex(i,n); integer i,n;
+      begin text t; integer h; t:-blanks(n);
+            while n > 0 do
+            begin h:=mod(i,16)+48; i:=i//16; if h > 57 then h:=h+7;
+                  t.setpos(n); t.putchar(char(h)); n:=n-1;
+            end;  sysout.outtext(t);
+      end;
+
+      character procedure prtchar(n); integer n;
+      prtchar:=if n>31 and n<128 then char(n) else '.';
+
+%title ***    M A I N    ***
+
+      outtext("SIMULA (R) Hex Dump   Version 0.00"); outimage;
+      outtext("Simula a.s. 1986.  All rights reserved.");
+      outimage; outimage;
+      inputFile;
+      prtpart:-blanks(20);
+
+NEXT:
+      sysout.setpos(60); sysout.outtext(prtpart); sysout.outimage;
+
+      if inpt.endfile then goto FINISH;
+      code:=inbyte; if inpt.endfile then goto FINISH;
+      prtpart.setpos(1); prtpart:=notext;
+      sysout.outint(sequ-1,6); sysout.outtext(": ");
+
+      prthex(code,2); prtpart.putchar(prtchar(code));
+      while sysout.pos < 56 do
+      begin code:=inbyte; if inpt.endfile then goto NEXT;
+            sysout.outchar(' '); prthex(code,2);
+            prtpart.putchar(prtchar(code));
+      end;
+      goto NEXT;
+
+FINISH:
+      inpt.close;
+      outimage; outimage;
+      outtext("END  --  Input Bytes"); outint(sequ,6);
+      outimage; outimage;
+end;

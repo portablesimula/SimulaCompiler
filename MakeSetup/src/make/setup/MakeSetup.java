@@ -39,7 +39,7 @@ public final class MakeSetup {
 	public static final String simulaReleaseID = "Simula-2.0";
 
 //	private final static int EXPLICIT_REVISION = -1; // Normal update
-	private final static int EXPLICIT_REVISION = 22;
+	private final static int EXPLICIT_REVISION = 23;
 	
 	private final static String GIT_BINARIES="C:\\GitHub\\Binaries";
 	private final static String RELEASE_ID=simulaReleaseID; // E.g. "Simula-2.0";
@@ -50,7 +50,7 @@ public final class MakeSetup {
 	private final static String GITHUB_ROOT="C:\\GitHub";
 	private final static String SETUP_ROOT="C:\\GitHub\\SimulaCompiler\\MakeSetup";
 	private final static String SIMULA_ROOT="C:\\GitHub\\SimulaCompiler\\Simula";
-	private final static String TESTBATCH_ROOT="C:\\GitHub\\SimulaCompiler\\TestBatch";
+	private final static String TESTBATCH_ROOT="C:\\GitHub\\SimulaCompiler\\SimulaTestBatch";
 	private final static String COMPILER_BIN=SIMULA_ROOT+"\\bin";
 	
 //	private final static String INSTALLER_BIN=ECLIPSE_ROOT+"\\bin";
@@ -150,10 +150,10 @@ public final class MakeSetup {
 	private static void copySimulaReleaseTests() throws IOException	{
 		printHeading("Copy Simula TestPrograms into "+RELEASE_SAMPLES);
 		deleteFiles(RELEASE_SAMPLES);
-		copyFolder(new File(TESTBATCH_ROOT+"\\src\\simulaTestPrograms\\samples"), new File(RELEASE_SAMPLES), false);
+		copyFolder(new File(TESTBATCH_ROOT+"\\src\\simulaSamples"), new File(RELEASE_SAMPLES), false);
 		list(new File(TESTBATCH_ROOT+"\\src\\simulaTestPrograms\\samples"));
 		list(new File(RELEASE_SAMPLES));
-		copyFolder(new File(TESTBATCH_ROOT+"\\src\\simulaTestPrograms\\samples\\data"), new File(RELEASE_SAMPLES+"\\data"), false);
+		copyFolder(new File(TESTBATCH_ROOT+"\\src\\simulaSamples\\data"), new File(RELEASE_SAMPLES+"\\data"), false);
 	}
 	
 	// ***************************************************************

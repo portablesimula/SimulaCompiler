@@ -1,0 +1,108 @@
+Drawing("Simulating Pandemic Development",900,900) begin 
+-- 
+-- The Norwegian technology house Rebel, which opened in Oslo in the autumn of 2021, 
+-- has a meeting room called Simula. 
+-- This is done to honor important milestones in technology development. 
+-- On the wall in meeting room 'Simula' is printed a program written in Simula I. 
+-- It is a draft simulation of a pandemic that I have translated and completed in Simula 67 
+-- 
+-- Written by Øystein Myhre Andersen, 2021. 
+-- 
+Simulation begin 
+   real population=140; 
+   real incubation=3; 
+   integer length=50; 
+   real simperiod=40; 
+   real probmass=0.3;  
+    
+   integer uninfected; 
+   real array probtreat(1:length); 
+   integer u1,u2,u3,u4,u5,u6; 
+    
+   -- Statistics 
+   integer nInfected,nSick; 
+ 
+   Process class SickPerson; 
+   begin integer day; boolean symptoms; real contacts; ref(Head) environment;   
+ 
+      procedure treatment; begin 
+         ref(Link) X; 
+         if not symptoms then begin 
+            for X :- environment.first while X in Process do X qua SickPerson.treatment; 
+         end else if draw(probmass,u4) then begin 
+            symptoms := false; nSick := nSick-1; 
+         end    
+      end treatment; 
+ 
+      environment :- new Head; uninfected := uninfected-1; symptoms := false; 
+      contacts := randint(1,6,u5); nInfected := nInfected+1; 
+      hold(incubation); symptoms := true; nSick := nSick+1; 
+      for day:=1 step 1 until length do if symptoms then begin 
+         hold(1); 
+         if draw(probtreat(day),u1) then treatment; 
+         infect(Poisson(contacts,u2),environment); 
+      end 
+   end SickPerson; 
+ 
+   procedure infect(n,S); value n; integer n; ref(Head) S; 
+   begin integer i; 
+      for i := 1 step 1 until n do 
+      if draw(uninfected / population,u3) then 
+      begin new SickPerson.into(S); 
+         activate S.last end 
+   end infect; 
+    
+   Process class Reporter; begin 
+      long real prevTime,timeStep; ref(Curve) infected,sick; 
+      ref(Description) infectedLabel,sickLabel; 
+      setBackgroundColor(lightGray); setStroke(4.5); 
+      infected :- new Curve(yellow); sick :- new Curve(red); 
+      infectedLabel :- new Description(100,100,yellow,"Number of infected persons (accumulated)"); 
+      sickLabel :- new Description(100,50,red,"Number of sick persons (not accumulated)"); 
+      prevTime:=clocktime; 
+         while clocktime < prevTime+10 do; 
+      timeStep:=1; -- Seconds 
+      while true do begin 
+         infected.move(nInfected); sick.move(nSick); 
+         hold(1); 
+         while clocktime < prevTime+timeStep do; 
+         prevTime:=prevTime+timeStep; 
+      end 
+   end; 
+    
+   class Description(x,y,color,txt); long real x,y; integer color; text txt; begin 
+         setFillColor(color); fillRectangle(x, y, 50, 10); 
+         setDrawColor(black); setFontSize(24); drawText(txt,x+70,y+11); 
+   end; 
+    
+   class Curve(color); value color; integer color; begin 
+      long real x,y,nextX,nextY; 
+      procedure move(nxt); value nxt; long real nxt; begin 
+         nextX := x+20; nextY := 900-10-(nxt*5); 
+         setDrawColor(color); drawLine(x,y,nextX,nextY); 
+         x:=nextX; y:=nextY; 
+      end; 
+      x:=0; y:=900-10; 
+   end; 
+       
+   begin -- Initiate variables 
+      integer i; 
+       
+      u1 := 455470315;  -- Start values chosen to 
+      u2 := 950423827;  -- avoid dependent series 
+      u3 := 1602649445; 
+      u4 := 660825717; 
+      u5 := 913127751; 
+      u6 := 1081211211; 
+       
+      uninfected := population; 
+      for i:=1 step 1 until length do probtreat(i) := uniform(0,0.5,u6); 
+   end; 
+ 
+   -- Start Simulation 
+   activate new Reporter; 
+   activate new SickPerson;  hold(simperiod); 
+   while true do; 
+ 
+end SIMULATION 
+end DRAWING

@@ -1,0 +1,70 @@
+ 
+% From: https://en.wikipedia.org/wiki/Simula 
+ 
+Simulation begin 
+ 
+   class FittingRoom; begin 
+      ref(Head) door; 
+      boolean inUse; 
+       
+      procedure request; begin 
+         if inUse then begin 
+             wait(door); 
+             door.first.out; 
+         end; 
+         inUse:= true; 
+      end; 
+       
+      procedure leave; begin 
+         inUse:= false; 
+         reportFittingRoomAvailable; 
+         activate door.first; 
+      end; 
+       
+      procedure reportFittingRoomAvailable; begin 
+         ref(Link) elt; 
+         outfix(time, 2, 6); outtext(": FittingRoom becomes available, Queue: "); 
+         elt:-door.first; 
+         if elt == none then outtext("Empty"); 
+         while elt =/= none do begin 
+            outtext(" " &(elt qua Person).pname); 
+            elt:-elt.suc; 
+         end;    
+         outimage; 
+      end; 
+       
+      door:- new Head; 
+   end; 
+   
+   procedure report(message); text message; begin 
+      outfix(time, 2, 6); outtext(": " & message); outimage; 
+   end; 
+ 
+   Process class Person(pname); text pname; begin 
+      while true do begin 
+         hold(normal(12, 4, U)); 
+         report (pname & " is requesting the fitting room"); 
+         fittingroom1.request; 
+         report(pname & " has entered the fitting room"); 
+         hold(normal(3, 1, U)); 
+         fittingroom1.leave; 
+         report(pname & " has left the fitting room"); 
+      end; 
+   end; 
+ 
+   integer U; 
+   ref(FittingRoom) fittingroom1; 
+ 
+   U:=356355093;
+ 
+   fittingroom1:- new FittingRoom; 
+   activate new Person("Sam"); 
+   activate new Person("Sally"); 
+   activate new Person("Andy"); 
+   activate new Person("Peter"); 
+   activate new Person("Elisabeth"); 
+   activate new Person("Harry"); 
+   activate new Person("Robert"); 
+   activate new Person("John"); 
+   hold(100); 
+end;
