@@ -158,7 +158,7 @@ public final class ProgramModule extends Statement {
 
 	@Override
 	public void printTree(int indent) {
-		System.out.println("=========== Resulting Syntax Tree after Checjing ================");
+		System.out.println("=========== Resulting Syntax Tree after Checking ================");
 		module.printTree(0);
 		System.out.println("=================================================================");
 	}

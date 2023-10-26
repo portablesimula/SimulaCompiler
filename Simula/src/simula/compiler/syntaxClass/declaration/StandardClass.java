@@ -534,8 +534,8 @@ public final class StandardClass extends ClassDeclaration {
 		Outfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"FIELD_",parameter("w",Type.Integer));  
 		Outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
 		Outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-		Outfile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-		Outfile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+		Outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+		Outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
 	}  
 
 	// ******************************************************************
@@ -611,8 +611,8 @@ public final class StandardClass extends ClassDeclaration {
 		Directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"FIELD_",parameter("w",Type.Integer));  
 		Directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
 		Directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-		Directfile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-		Directfile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+		Directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+		Directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
 	}  
 
 	// ******************************************************************

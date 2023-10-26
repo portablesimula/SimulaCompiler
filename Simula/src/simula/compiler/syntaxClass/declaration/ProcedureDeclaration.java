@@ -282,7 +282,10 @@ permits StandardProcedure, SwitchDeclaration {
 	// ***********************************************************************************************
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if(isPreCompiled && !isBlockLevelUpdated)
+			updateBlockLevels(DeclarationScope.currentRTBlockLevel);
+		if (IS_SEMANTICS_CHECKED())
+			return;
 		Global.sourceLineNumber = lineNumber;
 		if (declarationKind == Declaration.Kind.ContextFreeMethod) externalIdent = this.identifier;
 		if (declarationKind == Declaration.Kind.MemberMethod) externalIdent = this.identifier;

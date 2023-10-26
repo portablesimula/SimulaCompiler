@@ -119,8 +119,9 @@ public final class TextExpression extends Expression {
 		// TEXT & TEXT
 		lhs.doChecking();
 		rhs.doChecking();
-		if (lhs.type != Type.Text || rhs.type != Type.Text) {
-			Util.error("Operand Type to Text Concatenation(&) is not Text");
+//		if (lhs.type != Type.Text || rhs.type != Type.Text) {
+		if (!(lhs.type.equals(Type.Text) && rhs.type.equals(Type.Text))) {
+			Util.error("Operand Type to Text Concatenation(&) is not Text: "+lhs.type+" & "+rhs.type);
 		}
 		this.type = Type.Text;
 		if (Option.TRACE_CHECKER)

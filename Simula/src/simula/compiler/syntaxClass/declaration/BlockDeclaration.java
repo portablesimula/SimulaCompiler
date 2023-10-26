@@ -56,6 +56,12 @@ permits ClassDeclaration, ProcedureDeclaration, MaybeBlockDeclaration {
 	 * If true; this Class/Procedure is Pre-Compiled
 	 */
 	public boolean isPreCompiled;
+	
+	/**
+	 * Used for precompiled Class/Procedure to indicate whether the rtBlock level has been updated.
+	 * This is done in the doChecking method of the Class/Procedure
+	 */
+	public boolean isBlockLevelUpdated; // TODO: NEW_EXTERNAL_IMPL
 
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
@@ -98,6 +104,23 @@ permits ClassDeclaration, ProcedureDeclaration, MaybeBlockDeclaration {
 			new Parameter(Parse.expectIdentifier()).into(pList);
 		} while (Parse.accept(KeyWord.COMMA));
 		Parse.expect(KeyWord.ENDPAR);
+	}
+	
+	// ***********************************************************************************************
+	// *** Checking: updateBlockLevels
+	// ***********************************************************************************************
+	/**
+	 * Checking utility: updateBlockLevels in precompiles class or procedure.
+	 * @param enclRTBlockLevel enclosing block's rtBlock level
+	 */
+	protected void updateBlockLevels(int enclRTBlockLevel) { // TODO: NEW_EXTERNAL_IMPL
+		this.rtBlockLevel = this.rtBlockLevel + enclRTBlockLevel;
+		this.isBlockLevelUpdated = true;
+		for(Declaration decl:declarationList) {
+			if(decl instanceof BlockDeclaration blk) {
+				if(!blk.isBlockLevelUpdated) blk.updateBlockLevels(enclRTBlockLevel);
+			}
+		}
 	}
 
 	// ***********************************************************************************************

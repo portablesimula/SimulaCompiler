@@ -449,6 +449,8 @@ permits StandardClass, PrefixedBlockDeclaration {
 	// ***********************************************************************************************
 	@Override
 	public void doChecking() {
+		if(isPreCompiled && !isBlockLevelUpdated)
+			updateBlockLevels(DeclarationScope.currentRTBlockLevel);
 		if (IS_SEMANTICS_CHECKED())
 			return;
 		Global.sourceLineNumber = lineNumber;

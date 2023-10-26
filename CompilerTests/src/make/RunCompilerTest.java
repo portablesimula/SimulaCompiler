@@ -60,7 +60,7 @@ public final class RunCompilerTest {
 		// String name="/samples/AnimationTest.sim";
 		// String name="/samples/Atkins.sim";
 		// String name="/samples/Dates.sim";
-		// String name="/samples/DatesTest.sim";
+		 String name="/samples/DatesTest.sim";
 		// String name="/samples/Docking.sim";
 		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HelloWorld.sim";
@@ -209,7 +209,7 @@ public final class RunCompilerTest {
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
-		 String name="/simple/adHoc06.sim";
+		// String name="/simple/adHoc06.sim";
 		// String name="/simple/adHoc26.sim";
 		// String name="/simple/adHoc51.sim";
 		// String name="/simple/adHoc54.sim";
