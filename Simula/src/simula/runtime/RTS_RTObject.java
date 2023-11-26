@@ -1351,7 +1351,7 @@ public abstract class RTS_RTObject {
 	 * @param s the target text
 	 * @return the resulting text
 	 */
-	public RTS_TXT _ASGSTR(RTS_TXT T, final String s) {
+	public static RTS_TXT _ASGSTR(RTS_TXT T, final String s) {
 		if (T == null)
 			T = NOTEXT;
 		int fromLength = 0;
@@ -1386,7 +1386,7 @@ public abstract class RTS_RTObject {
 	 * @param right right hand side
 	 * @return true if relation holds
 	 */
-	public boolean _TXTREL_EQ(final RTS_TXT left, final RTS_TXT right) {
+	public static boolean _TXTREL_EQ(final RTS_TXT left, final RTS_TXT right) {
 		return (TXTREL(left, right, 2));
 	}
 
@@ -1396,7 +1396,7 @@ public abstract class RTS_RTObject {
 	 * @param right right hand side
 	 * @return true if relation holds
 	 */
-	public boolean _TXTREL_LE(final RTS_TXT left, final RTS_TXT right) {
+	public static boolean _TXTREL_LE(final RTS_TXT left, final RTS_TXT right) {
 		return (TXTREL(left, right, 3));
 	}
 
@@ -1406,7 +1406,7 @@ public abstract class RTS_RTObject {
 	 * @param right right hand side
 	 * @return true if relation holds
 	 */
-	public boolean _TXTREL_GT(final RTS_TXT left, final RTS_TXT right) {
+	public static boolean _TXTREL_GT(final RTS_TXT left, final RTS_TXT right) {
 		return (TXTREL(left, right, 4));
 	}
 
@@ -1416,7 +1416,7 @@ public abstract class RTS_RTObject {
 	 * @param right right hand side
 	 * @return true if relation holds
 	 */
-	public boolean _TXTREL_NE(final RTS_TXT left, final RTS_TXT right) {
+	public static boolean _TXTREL_NE(final RTS_TXT left, final RTS_TXT right) {
 		return (TXTREL(left, right, 5));
 	}
 
@@ -1426,7 +1426,7 @@ public abstract class RTS_RTObject {
 	 * @param right right hand side
 	 * @return true if relation holds
 	 */
-	public boolean _TXTREL_GE(final RTS_TXT left, final RTS_TXT right) {
+	public static boolean _TXTREL_GE(final RTS_TXT left, final RTS_TXT right) {
 		return (TXTREL(left, right, 6));
 	}
 
