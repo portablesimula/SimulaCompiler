@@ -216,7 +216,8 @@ public final class RunFullTestBatch {
 //		Option.EXTENSIONS=false;
 //		Option.CaseSensitive=true;
 		Option.GNERATE_LINE_CALLS=true;
-		
+//		Option.USE_FILE_CLASS_API=1;
+				
 		Global.packetName="simulaTestBatch";
 //		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime

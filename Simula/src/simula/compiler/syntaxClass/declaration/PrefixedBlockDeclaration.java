@@ -111,6 +111,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		if (externalIdent == null) externalIdent = edJavaClassName();
 		currentRTBlockLevel++;
 		rtBlockLevel = currentRTBlockLevel;
+		Util.ASSERT(blockPrefix != null, "Invariant");
 		if (blockPrefix != null) {
 			Global.enterScope(this.declaredIn);
 			blockPrefix.doChecking();
@@ -132,6 +133,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		currentRTBlockLevel--;
 		SET_SEMANTICS_CHECKED();
 	}
+
 
 	// ***********************************************************************************************
 	// *** Coding: doJavaCoding

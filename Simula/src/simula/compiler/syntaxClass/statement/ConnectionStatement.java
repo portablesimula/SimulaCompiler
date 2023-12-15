@@ -136,12 +136,14 @@ public final class ConnectionStatement extends Statement {
 			scope = scope.declaredIn;
 		}
 		scope.declarationList.add(inspectVariableDeclaration);
+		inspectVariableDeclaration.declaredIn=scope;
 
 		boolean hasDoPart=false;
 		boolean hasWhenPart=false;
 		if (Parse.accept(KeyWord.DO)) {
 			hasDoPart = true;
 			ConnectionBlock connectionBlock = new ConnectionBlock(inspectedVariable, null);
+			connectionBlock.declaredIn=scope;
 			Statement statement = Statement.expectStatement();
 			connectionPart.add(new DoPart(connectionBlock, statement));
 			connectionBlock.end();
@@ -150,6 +152,7 @@ public final class ConnectionStatement extends Statement {
 				String classIdentifier = Parse.expectIdentifier();
 				Parse.expect(KeyWord.DO);
 				ConnectionBlock connectionBlock = new ConnectionBlock(inspectedVariable, classIdentifier);
+				connectionBlock.declaredIn=scope;
 				hasWhenPart = true;
 				Statement statement = Statement.expectStatement();
 				connectionPart.add(new WhenPart(classIdentifier, connectionBlock, statement));

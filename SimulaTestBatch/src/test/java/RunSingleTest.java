@@ -63,7 +63,7 @@ public final class RunSingleTest {
 //		names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
 //		names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
 //		names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
-//		names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
+		names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
 //		names.add("simtst27.sim"); // OK:  Test while-loops.
 //		names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
 //		names.add("simtst29.sim"); // OK:  Procedure parameters by value
@@ -164,7 +164,7 @@ public final class RunSingleTest {
 //
 //		names.add("simtst111.sim"); // OK: Virtual Label Sample 1
 //		names.add("simtst112.sim"); // OK: Virtual Label Sample 2
-		names.add("simtst113.sim"); // OK: Virtual Switch Sample 1
+//		names.add("simtst113.sim"); // OK: Virtual Switch Sample 1
 //		names.add("simtst114.sim"); // OK: Switch Statement
 //		names.add("simtst115.sim"); // OK: Simple QPS-Sample 1
 //		names.add("simtst116.sim"); // OK: Simple QPS-Sample 2
@@ -212,7 +212,7 @@ public final class RunSingleTest {
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
 		Option.SPORT=true;
-//		Option.verbose = true;
+		Option.verbose = true;
 		Option.WARNINGS=true;
 //		Option.DEBUGGING=true;
 //		Option.EXTENSIONS=false;

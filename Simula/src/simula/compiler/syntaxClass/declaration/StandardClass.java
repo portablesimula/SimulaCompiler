@@ -126,8 +126,8 @@ public final class StandardClass extends ClassDeclaration {
 		typeText.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"getfrac");  
 		typeText.addStandardProcedure(Declaration.Kind.MemberMethod,null,"putint",parameter("i",Type.Integer));  
 		typeText.addStandardProcedure(Declaration.Kind.MemberMethod,null,"putfrac",parameter("i",Type.Integer),parameter("n",Type.Integer));  
-		typeText.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"putfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
-		typeText.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"putreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
+		typeText.addStandardProcedure(Declaration.Kind.MemberMethod,null,"putfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
+		typeText.addStandardProcedure(Declaration.Kind.MemberMethod,null,"putreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
 	}
 
 	// ******************************************************************
@@ -179,13 +179,20 @@ public final class StandardClass extends ClassDeclaration {
 		//	    Constants  maxrank, maxint, minint, maxreal, minreal,
 		//	      maxlongreal, minlongreal, simulaid.
 
-		ENVIRONMENT.addStandardAttribute(Type.LongReal,"maxlongreal");  
-		ENVIRONMENT.addStandardAttribute(Type.LongReal,"minlongreal");  
-		ENVIRONMENT.addStandardAttribute(Type.Real,"maxreal");  
-		ENVIRONMENT.addStandardAttribute(Type.Real,"minreal");  
-		ENVIRONMENT.addStandardAttribute(Type.Integer,"maxrank");  
-		ENVIRONMENT.addStandardAttribute(Type.Integer,"maxint");  
-		ENVIRONMENT.addStandardAttribute(Type.Integer,"minint");  
+//		ENVIRONMENT.addStandardAttribute(Type.LongReal,"maxlongreal");  
+//		ENVIRONMENT.addStandardAttribute(Type.LongReal,"minlongreal");  
+//		ENVIRONMENT.addStandardAttribute(Type.Real,"maxreal");  
+//		ENVIRONMENT.addStandardAttribute(Type.Real,"minreal");  
+//		ENVIRONMENT.addStandardAttribute(Type.Integer,"maxrank");  
+//		ENVIRONMENT.addStandardAttribute(Type.Integer,"maxint");  
+//		ENVIRONMENT.addStandardAttribute(Type.Integer,"minint");  
+		ENVIRONMENT.addStandardAttribute(Type.LongReal,"maxlongreal",Double.MAX_VALUE);  
+		ENVIRONMENT.addStandardAttribute(Type.LongReal,"minlongreal",-Double.MAX_VALUE);  
+		ENVIRONMENT.addStandardAttribute(Type.Real,"maxreal",Float.MAX_VALUE);  
+		ENVIRONMENT.addStandardAttribute(Type.Real,"minreal",-Float.MAX_VALUE);  
+		ENVIRONMENT.addStandardAttribute(Type.Integer,"maxrank",255);  
+		ENVIRONMENT.addStandardAttribute(Type.Integer,"maxint",Integer.MAX_VALUE);  
+		ENVIRONMENT.addStandardAttribute(Type.Integer,"minint",Integer.MIN_VALUE);  
 		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"simulaid");
 		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"sourceline");
 
@@ -362,8 +369,8 @@ public final class StandardClass extends ClassDeclaration {
 		BASICIO=new StandardClass("RTObject","BASICIO");
 		ENVIRONMENT.addStandardClass(BASICIO); // Declared in ENVIRONMENT
 		BASICIO.isContextFree=true;
-		BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Infile"),"sysin");  
-		BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Printfile"),"sysout");  
+		BASICIO.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Ref("Infile"),"sysin");  
+		BASICIO.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Ref("Printfile"),"sysout");  
 		BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,null,"terminate_program");  
 		BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,null,"call",parameter("obj",Type.Ref("RTObject")));
 		BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,null,"resume",parameter("obj",Type.Ref("RTObject")));
@@ -1340,8 +1347,8 @@ public final class StandardClass extends ClassDeclaration {
 	 * @param ident the attribute identifier
 	 * @param iValue the constant integer value
 	 */
-	private void addStandardAttribute(Type type,String ident,int iValue) {
-		declarationList.add(new SimpleVariableDeclaration(type,ident,true,new Constant(Type.Integer,(Integer)iValue))); }
+	private void addStandardAttribute(Type type,String ident,Number value) {
+		declarationList.add(new SimpleVariableDeclaration(type,ident,true,new Constant(type,value))); }
 
 	/**
 	 * Create and add a new StandardProcedure
