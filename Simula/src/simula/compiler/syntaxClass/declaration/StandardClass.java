@@ -713,7 +713,8 @@ public final class StandardClass extends ClassDeclaration {
 		BASICIO.addStandardClass(Inbytefile);  // Declared in BASICIO
 		Inbytefile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
 		Inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"endfile");  
-		Inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+//		Inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+		Inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open");  // TODO: TESTING
 		Inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
 		Inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inbyte");  
 		Inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));
@@ -742,7 +743,8 @@ public final class StandardClass extends ClassDeclaration {
 	private static void initOutbytefile() { 
 		StandardClass Outbytefile=new StandardClass("Bytefile","Outbytefile");
 		BASICIO.addStandardClass(Outbytefile);
-		Outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+//		Outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+		Outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open");   // TODO: TESTING
 		Outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
 		Outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
 		Outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
@@ -789,7 +791,8 @@ public final class StandardClass extends ClassDeclaration {
 		Directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"location");  
 		Directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"maxloc");  
 		Directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"locked");  
-		Directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+//		Directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+		Directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open");   // TODO: TESTING
 		Directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");      
 		Directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"lastloc");  
 		Directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"locate",parameter("i",Type.Integer));  

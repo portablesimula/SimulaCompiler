@@ -1,0 +1,203 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 138
+%
+%  PURPOSE:     Test For-Statement with ControlVariable with Type Conversion.
+%
+%  WRITTEN BY:  MYH
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(140,"--- Test For-Statement with ControlVariable with Type Conversion.") begin
+   text array facit(0:50);
+   integer traceCase;
+   integer i,k;
+   real r;
+   long real lr;
+   
+	class A(i); integer i; begin
+	   ref(A) procedure next; next :- if i=1 then y else none;
+	end;
+	A class B; begin end;
+	ref(A) x; ref(B) y; ref(A) z;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then
+      	 begin outtext(msg); outimage; end;
+      if msg ne facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+	facit(0):-"At START";
+	facit(1):-"Case 1: i = 57";
+	facit(2):-"Case 2: i = 56";
+	facit(3):-"Case 3: i = 57";
+	facit(4):-"Case 4: i = 56";
+	facit(5):-"Case 5,6: i = 76";
+	facit(6):-"Case 5,6: i = 77";
+	facit(7):-"Case 7: r = 5656.0";
+	facit(8):-"Case 8: r = 56.49";
+	facit(9):-"Case 9,10: r = 56.49";
+	facit(10):-"Case 9,10: r = 5656.0";
+	facit(11):-"Case 11: lr = 5656.0";
+	facit(12):-"Case 12: lr = 56.4900016784668";
+	facit(13):-"Case 13,14: lr = 56.4900016784668";
+	facit(14):-"Case 13,14: lr = 5656.0";
+	facit(15):-"Case 15,16: i = 235";
+	facit(16):-"Case 15,16: i = 235";
+	facit(17):-"Case 17,18: i = 765";
+	facit(18):-"Case 17,18: i = 765";
+	facit(19):-"Case 19,20: i = 765";
+	facit(20):-"Case 19,20: i = 235";
+	facit(21):-"Case 21,22: r = 234789.0";
+	facit(22):-"Case 21,22: r = 234789.0";
+	facit(23):-"Case 23,24: r = 765.49";
+	facit(24):-"Case 23,24: r = 765.49";
+	facit(25):-"Case 25,26: r = 234789.0";
+	facit(26):-"Case 25,26: r = 765.49";
+
+	facit(27):-"Case 27,28: lr = 234789.0";
+	facit(28):-"Case 27,28: lr = 234789.0";
+	facit(29):-"Case 29,30: lr = 765.489990234375";
+	facit(30):-"Case 29,30: lr = 765.489990234375";
+	facit(31):-"Case 31,32: lr = 234789.0";
+	facit(32):-"Case 31,32: lr = 765.489990234375";
+
+	facit(33):-"Case 33,34: i = 7";
+	facit(34):-"Case 33,34: i = 9";
+	facit(35):-"Case 35,36: r = 7.49";
+	facit(36):-"Case 35,36: r = 9.49";
+	facit(37):-"Case 37,38: lr = 7.0";
+	facit(38):-"Case 37,38: lr = 9.5";
+
+	facit(39):-"Case 39: i = 444";
+	facit(40):-"Case 40: i = 666";
+	facit(41):-"Case 41,42: i = 777";
+	facit(42):-"Case 41,42: i = 333";
+	facit(43):-"Case 43: i = 333";
+
+	facit(44):-"At END";
+
+	trace("At START");
+
+	r := 56.56;
+	for i := r do trace("Case 1: i = " & edit(i));
+	r := 56.49;
+	for i := r do trace("Case 2: i = " & edit(i));
+
+	lr := 56.50;
+	for i := lr do trace("Case 3: i = " & edit(i));
+	lr := 56.43;
+	for i := lr do trace("Case 4: i = " & edit(i));
+
+	r := 76.39;
+	lr := 76.50;
+	for i := r, lr do trace("Case 5,6: i = " & edit(i));
+
+
+	i := 5656;
+	for r := i do trace("Case 7: r = " & edit(r));
+	lr := 56.49;
+	for r := lr do trace("Case 8: r = " & edit(r));
+	for r := lr, i do trace("Case 9,10: r = " & edit(r));
+
+	i := 5656;
+	for lr := i do trace("Case 11: lr = " & edit(lr));
+	r := 56.49;
+	for lr := r do trace("Case 12: lr = " & edit(lr));
+	for lr := r, i do trace("Case 13,14: lr = " & edit(lr));
+
+% =================== integer   While elements
+	
+   r := 234.789;
+   for i := r while k < 10 do begin
+   	   k := k + 8;
+   	   trace("Case 15,16: i = " & edit(i));
+   end;
+	
+   lr := 765.49; k := 0;
+   for i := lr while k < 10 do begin
+   	   k := k + 8;
+   	   trace("Case 17,18: i = " & edit(i));
+   end;
+
+   k := 0;
+   for i := lr, r while k < 10 do begin
+   	   k := k + 8;
+   	   trace("Case 19,20: i = " & edit(i));
+   end;
+
+% =================== real   While elements
+	
+   i := 234789; k := 0;
+   for r := i while k < 10 do begin
+   	   k := k + 8;
+   	   trace("Case 21,22: r = " & edit(r));
+   end;
+	
+   lr := 765.49; k := 0;
+   for r := lr while k < 10 do begin
+   	   k := k + 8;
+   	   trace("Case 23,24: r = " & edit(r));
+   end;
+
+   k := 0;
+   for r := i, lr while k < 10 do begin
+   	   k := k + 8;
+   	   trace("Case 25,26: r = " & edit(r));
+   end;
+
+% =================== long real   While elements
+	
+   i := 234789; k := 0;
+   for lr := i while k < 10 do begin
+   	   k := k + 8;
+   	   trace("Case 27,28: lr = " & edit(lr));
+   end;
+	
+   r := 765.49; k := 0;
+   for lr := r while k < 10 do begin
+   	   k := k + 8;
+   	   trace("Case 29,30: lr = " & edit(lr));
+   end;
+
+   k := 0;
+   for lr := i, r while k < 10 do begin
+   	   k := k + 8;
+   	   trace("Case 31,32: lr = " & edit(lr));
+   end;
+
+% =================== For-step-until elements
+
+   r := 1.5
+   lr := 7.49
+   for i := lr step r until 10.0 do trace("Case 33,34: i = " & edit(i));
+
+   i := 2;
+   for r := lr step i until 10.0 do trace("Case 35,36: r = " & edit(r));
+
+   i := 7; r := 2.5;
+   for lr := i step r until 10.0 do trace("Case 37,38: lr = " & edit(lr));
+
+% =================== Ref-type elements
+	
+	y :- new B(444);
+	for x :- y do trace("Case 39: i = " & edit(x.i));
+	
+	x :- new B(666);
+	for y :- x do trace("Case 40: i = " & edit(y.i));
+
+	x :- new B(333); y :- new B(777);
+	for z :- y, x do trace("Case 41,42: i = " & edit(z.i));
+	
+	x :- new B(333); y :- new B(777); i := 1;
+	for z :- x, x.next while z =/= none do begin trace("Case 43: i = " & edit(z.i)); i := 0 end;
+
+	trace("At END");
+	
+end

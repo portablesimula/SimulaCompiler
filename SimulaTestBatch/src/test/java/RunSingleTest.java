@@ -63,7 +63,7 @@ public final class RunSingleTest {
 //		names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
 //		names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
 //		names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
-		names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
+//		names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
 //		names.add("simtst27.sim"); // OK:  Test while-loops.
 //		names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
 //		names.add("simtst29.sim"); // OK:  Procedure parameters by value
@@ -195,6 +195,8 @@ public final class RunSingleTest {
 //		names.add("simtst136.sim"); // OK: Directfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst137.sim"); // OK: DirectBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst138.sim"); // OK: ref() and Real type Arrays.
+//		names.add("simtst139.sim"); // OK: Test remote Array access.
+		names.add("simtst140.sim"); // OK: Test For-Statement with ControlVariable with Type Conversion.
 //		
 //		names.add("RT_ErrorTest.sim"); // Simula TestBatch Framework
 //		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
@@ -241,7 +243,7 @@ public final class RunSingleTest {
 		Option.GNERATE_LINE_CALLS=true;
 
 		// Byte code engineering Options
-//		Option.USE_FILE_CLASS_API=1;
+		Option.USE_FILE_CLASS_API=1;
 //		Option.LIST_INPUT_INSTRUCTION_LIST=true;
 //		Option.LIST_REPAIRED_INSTRUCTION_LIST=true;
 //		Option.TRACE_REPAIRING_INPUT=true;

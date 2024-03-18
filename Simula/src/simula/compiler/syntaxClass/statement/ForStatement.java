@@ -353,6 +353,8 @@ public final class ForStatement extends Statement {
 			if (Option.TRACE_CHECKER)
 				Util.TRACE("BEGIN ForListElement(" + this + ").doChecking - Current Scope Chain: "
 						+ Global.getCurrentScope().edScopeChain());
+			expr1.doChecking();                                                // TESTING_FOR_STATEMENT
+			expr1 = TypeConversion.testAndCreate(controlVariable.type, expr1); // TESTING_FOR_STATEMENT
 			expr1.doChecking();
 			expr1.backLink = ForStatement.this; // To ensure _RESULT from functions
 		}

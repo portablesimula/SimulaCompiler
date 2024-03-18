@@ -1,0 +1,40 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 138
+%
+%  PURPOSE:     Test remote Array access.
+%
+%  WRITTEN BY:  MYH
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(139,"--- Test remote Array access.") begin
+
+    class AAA(n,ARR,REFA); integer n; boolean array ARR; ref(AAA) array REFA;
+    begin
+    	boolean array BRR(0:30);
+    end;
+
+   	boolean array BR(0:30);
+   	ref(AAA) array REFR(0:30);
+    ref(AAA) xxx,yyy;
+    boolean b;
+    
+    
+    xxx :- new AAA(1,BR,REFR);
+    
+    xxx.REFA(4) :- xxx;
+    yyy :- xxx.REFA(4);
+	if yyy.n ne 1 then err("Case 1");
+
+	xxx.ARR(5) := true;
+	b := xxx.ARR(5);
+	if not b then err("Case 2");
+
+	xxx.BRR(5) := true;
+	b := xxx.BRR(5);
+	if not b then err("Case 3");
+	
+	if not xxx.ARR(5) then err("Case 4");
+    if not xxx.BRR(5) then err("Case 5");
+end

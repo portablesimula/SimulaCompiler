@@ -231,6 +231,9 @@ public class RTS_Imagefile extends RTS_File {
 	 * @param w the width of editing field
 	 * @throws RTS_SimulaRuntimeError if the Item is too long in output operation
 	 */
+	public void outfix(final float r, final int n, final int w) {
+		outfix((double)r, n, w);
+	}
 	public void outfix(final double r, final int n, final int w) {
 		if (w <= 0) {
 			RTS_TXT T = blanks(n + 10);

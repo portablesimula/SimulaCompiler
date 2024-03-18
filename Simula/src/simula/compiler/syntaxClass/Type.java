@@ -446,6 +446,17 @@ public sealed class Type extends SyntaxClass implements Externalizable permits O
 		Util.IERR("");
 		return(this.toString());
 	}
+	
+	public String getArrayType() {
+		if(this==Type.Integer)     return("RTS_INTEGER_ARRAY");
+		if(this==Type.Character)   return("RTS_CHARACTER_ARRAY");
+		if(this==Type.Boolean)     return("RTS_BOOLEAN_ARRAY");
+		if(this==Type.Real)        return("RTS_REAL_ARRAY");
+		if(this==Type.LongReal)    return("RTS_LONG_REAL_ARRAY");
+		if(this==Type.Text)        return("RTS_TEXT_ARRAY");
+		if(this.isReferenceType()) return("RTS_REF_ARRAY");
+		Util.IERR("IMPOSSIBLE");   return(null);
+	}
 	  
 	@Override
 	public String toString() {

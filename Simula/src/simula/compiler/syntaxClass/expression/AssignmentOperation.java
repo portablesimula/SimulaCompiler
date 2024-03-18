@@ -194,6 +194,12 @@ public final class AssignmentOperation extends Expression {
 	private String doAccessRemoteArray(final Expression beforeDot, final VariableExpression array, final String rightPart) {
 		String obj = beforeDot.toJavaCode();
 		String remoteIdent = obj + '.' + array.edIdentifierAccess(true);
+		Declaration decl = array.meaning.declaredAs;
+		System.out.println("AssignmentOperation.doAccessRemoteArray: decl="+decl.getClass().getSimpleName()+"  "+decl);
+		if(decl instanceof Parameter par) { // TESTING_ARRAY
+			String arrayType = par.type.getArrayType();
+			remoteIdent = "(("+arrayType+")"+remoteIdent+")";
+		}
 		return (array.doPutELEMENT(remoteIdent, rightPart));
 	}
 
