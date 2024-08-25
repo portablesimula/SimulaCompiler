@@ -1,0 +1,21 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 144
+%
+%  PURPOSE: Test constants and 'is', 'in', 'qua' and 'this' in precompiled attribute file.
+%
+%  WRITTEN BY:  MYH
+% ==============================================================================
+external class Precompiled144;
+
+Precompiled144(144,"--- Test constants and 'is', 'in', 'qua' and 'this' in precompiled attribute file") begin
+
+	trace("Check iConst = " & edit(iConst));
+	trace("Check rConst = " & edfix(rConst,3));
+	trace("Check lrConst = " & edfix(lrConst,3));
+	trace("Check cConst = " & edit(cConst));
+	trace("Check tConst = " & tConst);
+	trace("Check bConst = " & edit(bConst));
+
+	trace("At Main'END with K = " & edit(K));
+      
+end;

@@ -1,0 +1,79 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 138
+%
+%  PURPOSE:     Test Label parameter to normal and formal procedure.
+%
+%  WRITTEN BY:  MYH
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(145,"--- Test Label parameter to normal and formal procedure.") begin
+   text array facit(0:9);
+   integer traceCase;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then
+      	 begin outtext(msg); outimage; end;
+      if msg ne facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+	
+	procedure P1(fP,LAB); procedure fP; label LAB; begin
+		trace("In P1 BEFORE CPN");
+		R1(fP,LAB);
+		trace("IMPOSSIBLE");
+	end;
+	
+	procedure R1(fP,LAB); procedure fP; label LAB; begin
+		trace("In R1 BEFORE CPF");
+		fP(LAB);
+	end;
+	
+	procedure P2(fP,LAB); name fP, LAB; procedure fP; label LAB; begin
+		trace("In P2 BEFORE CPN");
+		R2(fP,LAB);
+		trace("IMPOSSIBLE");
+	end;
+
+	procedure R2(fP,LAB); procedure fP; label LAB; begin
+		trace("In R2 BEFORE CPF");
+		fP(LAB);
+	end;
+	
+	procedure Q(LAB); label LAB; begin
+		trace("In Q BEFORE GOTO");
+		goto LAB;
+	end;
+
+	facit(0):-"At START";
+	facit(1):-"In P1 BEFORE CPN";
+	facit(2):-"In R1 BEFORE CPF";
+	facit(3):-"In Q BEFORE GOTO";
+	facit(4):-"AT L1";
+	facit(5):-"In P2 BEFORE CPN";
+	facit(6):-"In R2 BEFORE CPF";
+	facit(7):-"In Q BEFORE GOTO";
+	facit(8):-"AT L2";
+	facit(9):-"At END";
+
+	trace("At START");
+
+	P1(Q,L1);
+	trace("IMPOSSIBLE");
+	
+	L1:	trace("AT L1");
+	
+	P2(Q,L2);
+	trace("IMPOSSIBLE");
+	
+	L2:	trace("AT L2");
+
+	trace("At END");
+	
+end

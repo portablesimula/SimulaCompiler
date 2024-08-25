@@ -1,0 +1,98 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 146
+%
+%  PURPOSE:     Test text by value to formal and virtual procedure.
+%
+%  METHOD:      Try some examples and see if they work as expected.
+%
+%  WRITTEN BY:  MYH
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(146,"--- Test text by value to formal and virtual procedure") begin
+   text array facit(0:13);
+   integer traceCase;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then
+      	 begin outtext(msg); outimage; end;
+      if msg ne facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+	
+
+	class A; virtual: procedure vP1, vP2; begin
+		procedure vP1(t); value t; text t; begin
+			trace("Begin vP1 t=" & t);
+			t.sub(5,11) := " CORR-1 ";
+			trace("Endof vP1 t=" & t);
+		end;
+		
+		procedure vP2(t); text t; begin
+			trace("Begin vP2 t=" & t);
+			t.sub(5,11) := " CORR-2 ";
+			trace("Endof vP2 t=" & t);
+		end;
+	end;
+	
+	procedure P(fP,t); procedure fP; text t; begin
+		fP(t);
+	end;
+	
+	procedure Q1(t); value t; text t; begin
+		trace("Begin Q1 t=" & t);
+		t.sub(5,11) := " CORR-1 ";
+		trace("Endof Q1 t=" & t);
+	end;
+	
+	procedure Q2(t); value t; text t; begin
+		trace("Begin Q2 t=" & t);
+		t.sub(5,11) := " CORR-1 ";
+		trace("Endof Q2 t=" & t);
+	end;
+
+	ref(A) x;
+	text t1, t2;
+	
+	x :- new A;
+	t1 :- copy("ABCDEFGHIJKLMNOPQRSTUV");
+	t2 :- copy("abcdefghijklmnopqrstuv");
+
+	facit(0):-"At START";
+	facit(1):-"Begin vP1 t=ABCDEFGHIJKLMNOPQRSTUV";
+	facit(2):-"Endof vP1 t=ABCD CORR-1    PQRSTUV";
+	facit(3):-"After vP1 t1=ABCDEFGHIJKLMNOPQRSTUV";
+	facit(4):-"Begin vP2 t=ABCDEFGHIJKLMNOPQRSTUV";
+	facit(5):-"Endof vP2 t=ABCD CORR-2    PQRSTUV";
+	facit(6):-"After vP2 t1=ABCD CORR-2    PQRSTUV";
+	facit(7):-"Begin Q1 t=abcdefghijklmnopqrstuv";
+	facit(8):-"Endof Q1 t=abcd CORR-1    pqrstuv";
+	facit(9):-"After P(Q1,t2) t2=abcdefghijklmnopqrstuv";
+	facit(10):-"Begin Q2 t=abcdefghijklmnopqrstuv";
+	facit(11):-"Endof Q2 t=abcd CORR-1    pqrstuv";
+	facit(12):-"After P(Q2,t2) t2=abcdefghijklmnopqrstuv";
+	facit(13):-"At END";
+
+	trace("At START");
+	
+	x.vP1(t1);
+	trace("After vP1 t1=" & t1);
+	
+	x.vP2(t1);
+	trace("After vP2 t1=" & t1);
+	
+	P(Q1,t2);
+	trace("After P(Q1,t2) t2=" & t2);
+	
+	P(Q2,t2);
+	trace("After P(Q2,t2) t2=" & t2);
+
+	trace("At END");
+
+ end;

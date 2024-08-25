@@ -28,7 +28,7 @@ import simula.editor.RTOption;
  */
 public final class CompileFEC {
 	/**
-	 * Default Constructor.
+	 * Default Constructor. 
 	 */
 	CompileFEC(){}
 	

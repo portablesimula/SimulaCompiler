@@ -1,3 +1,5 @@
  begin
- 	outreal(4563.14 * 1000,0,15);
+ 	goto L1;
+ 	
+ 	L1:
  end;

@@ -1,0 +1,81 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 142
+%
+%  PURPOSE:     Simple test of Random drawing procedures.
+%			    Procedures draw, randint, uniform, normal, negexp,
+%		      	Poisson, Erlang, discrete, linear, histd.
+%
+%  WRITTEN BY:  MYH
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(142,"--- Simple test of Random drawing procedures.") begin
+   text array facit(0:15);
+   integer traceCase;
+
+
+	integer i,U;
+	real val;
+	real array RA, RB(1:9);
+	long real array LRA, LRB(1:9);
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then
+      	 begin outtext(msg); outimage; end;
+      if msg ne facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+	facit(0):-"At START";
+	facit(1):-"Test draw: res = true";
+	facit(2):-"Test randint: res = 7";
+	facit(3):-"Test uniform: res = 4.109";
+	facit(4):-"Test normal: res = -5.689";
+	facit(5):-"Test negexp: res = 0.018";
+	facit(6):-"Test Poisson: res = 13";
+	facit(7):-"Test Erlang: res = 0.455";
+	facit(8):-"Test discrete: res = 10";
+	facit(9):-"Test discrete: res = 10";
+	facit(10):-"Test linear: res = 0.651";
+	facit(11):-"Test linear: res = 0.268";
+	facit(12):-"Test linear: res = 0.748";
+	facit(13):-"Test linear: res = 0.703";
+	facit(14):-"Test histd: res = 3";
+	facit(15):-"At END";
+
+	trace("At START");
+	U:= 1566259315; 
+
+	trace("Test draw: res = "     & edit(draw(3.14, U)));
+	trace("Test randint: res = "  & edit(randint(3,7, U)));
+	trace("Test uniform: res = "  & edfix(uniform(3.14,7.31, U),3));
+	trace("Test normal: res = "   & edfix(normal(3.14,7.31, U),3));
+	trace("Test negexp: res = "   & edfix(negexp(7.31, U),3));
+	trace("Test Poisson: res = "  & edit(Poisson(7.31, U)));
+	trace("Test Erlang: res = "   & edfix(Erlang(3.14,7.31, U),3));
+	trace("Test discrete: res = " & edit(discrete(RA, U)));
+	trace("Test discrete: res = " & edit(discrete(LRA, U)));
+	
+		
+	for i := 1 step 1 until 8 do begin
+		RA(i) := RB(i) := LRA(i) := LRB(i) := val;
+		val := val + 0.1;
+	end;
+	RA(9) := RB(9) := LRA(9) := LRB(9) := 1;
+	
+	trace("Test linear: res = "   & edfix(linear(RA, RB, U),3));
+	trace("Test linear: res = "   & edfix(linear(RA, LRB, U),3));
+	trace("Test linear: res = "   & edfix(linear(LRA, RB, U),3));
+	trace("Test linear: res = "   & edfix(linear(LRA, LRB, U),3));
+	
+	trace("Test histd: res = "    & edit(histd(RA, U)));
+
+	trace("At END");
+	
+end

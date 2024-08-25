@@ -1,0 +1,95 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 141
+%
+%  PURPOSE:     Test For-Statement with SIMSET and SIMULATION list-processing.
+%
+%  WRITTEN BY:  MYH
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(141,"--- Test For-Statement with SIMSET and SIMULATION list-processing.") begin
+   text array facit(0:25);
+   integer traceCase;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then
+      	 begin outtext(msg); outimage; end;
+      if msg ne facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+	facit(0):-"At START";
+	facit(1):-"Simset List: i = 1";
+	facit(2):-"Simset List: i = 2";
+	facit(3):-"Simset List: i = 3";
+	facit(4):-"Simset List: i = 4";
+	facit(5):-"Simset List: i = 5";
+	facit(6):-"Simset List: i = 6";
+	facit(7):-"Simset List: i = 7";
+	facit(8):-"Simset List: i = 8";
+	facit(9):-"Simset List: i = 9";
+	facit(10):-"Simset List: i = 10";
+	
+	facit(11):-"Simulation Queue: i = 1";
+	facit(12):-"Simulation Queue: i = 2";
+	facit(13):-"Simulation Queue: i = 3";
+	facit(14):-"Simulation Queue: i = 4";
+	facit(15):-"Simulation Queue: i = 5";
+	facit(16):-"Simulation Queue: i = 6";
+	facit(17):-"Simulation Queue: i = 7";
+	facit(18):-"Simulation Queue: i = 8";
+	facit(19):-"Simulation Queue: i = 9";
+	facit(20):-"Simulation Queue: i = 10";
+
+	facit(21):-"At END";
+
+	trace("At START");
+
+
+% =================== SIMSET
+	
+	Simset begin
+		ref(Head) set; ref(Element) x;
+		integer i;
+		
+		Link class Element(i); integer i; begin
+		end;
+		
+		comment Populate the set;
+		set :- new Head;
+		for i:=1 step 1 until 10 do new Element(i).into(set);
+		
+		for x :- set.first, x.suc while x =/= none do begin
+			trace("Simset List: i = " & edit(x.i));
+		end;
+	
+	end;
+
+% =================== SIMULATION
+	
+	Simulation begin
+		ref(Head) queue; ref(Person) x;
+		integer i;
+		
+		Process class Person(i); integer i; begin
+		end;
+		
+		comment Populate the queue;
+		queue :- new Head;
+		for i:=1 step 1 until 10 do new Person(i).into(queue);
+	
+		for x:-queue.first, x.suc while x =/= none do begin
+			trace("Simulation Queue: i = " & edit(x.i));
+		end;
+	
+	end;
+
+	trace("At END");
+	
+end

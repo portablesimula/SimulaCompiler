@@ -1,0 +1,80 @@
+% ==============================================================================
+%
+%  Precompiled for simtst144
+%
+% ==============================================================================
+
+external class SimulaTest;
+
+SimulaTest class Precompiled144;
+begin
+	text array facit(0:14);
+	integer traceCase;
+	ref(A) x; integer K;
+	
+	integer iConst = 7531;
+	real rConst = 3.14;
+	long real lrConst = 4.13;
+	character cConst = 'Z';
+	text tConst = "AbraCaDabra";
+	boolean bConst = true;
+	
+	   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then
+      	 begin outtext(msg); outimage; end;
+      if msg ne facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+	
+	class A; begin
+		integer N;
+		N := 432;
+	end;      
+
+	A class B; begin
+		integer N;
+		N := 567;
+	
+		K := this A.N;
+	end;
+
+	facit(0):-"At START";
+	facit(1):-"TEST-1: OK";
+	facit(2):-"TEST-2: x is'not A";
+	facit(3):-"TEST-3: x is B";
+	facit(4):-"TEST-4: x in A";
+	facit(5):-"TEST-5: x in B";
+	facit(6):-"TEST-6: In B with N = 567";
+	facit(7):-"At Precompiled'END";
+	facit(8):-"Check iConst = 7531";
+	facit(9):-"Check rConst = 3.140";
+	facit(10):-"Check lrConst = 4.130";
+	facit(11):-"Check cConst = Z";
+	facit(12):-"Check tConst = AbraCaDabra";
+	facit(13):-"Check bConst = true";
+	facit(14):-"At Main'END with K = 432";
+	
+	trace("At START");
+	x :- new B;
+	
+	if x qua B.N = 567 then trace("TEST-1: OK");
+	
+	if x is A then else trace("TEST-2: x is'not A");
+	if x is B then trace("TEST-3: x is B");
+
+	if x in A then trace("TEST-4: x in A");
+	if x in B then trace("TEST-5: x in B");
+	
+	B begin 
+		trace("TEST-6: In B with N = " & edit(N));
+	end;
+	
+	trace("At Precompiled'END");
+	
+end;
