@@ -85,7 +85,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 
-public abstract sealed class SyntaxClass permits Declaration, Statement, Expression, HiddenSpecification, ProtectedSpecification, Type {
+public abstract class SyntaxClass {
 	/**
 	 * Controls semantic checking.
 	 * <p>

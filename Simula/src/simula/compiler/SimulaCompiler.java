@@ -480,8 +480,8 @@ public final class SimulaCompiler {
 	private int callJavaSystemCompiler(final JavaCompiler compiler, final String classPath) throws IOException {
 		Vector<String> arguments = new Vector<String>();
 //		arguments.add("-source"); arguments.add("21"); // TODO: Change when ClassFile API is released
-		arguments.add("-target");
-		arguments.add("21");
+//		arguments.add("-target");
+//		arguments.add("21");
 //		arguments.add("-release"); arguments.add("21"); // TODO: Change when ClassFile API is released
 		if (Option.DEBUGGING) {
 			arguments.add("-version");
@@ -533,8 +533,8 @@ public final class SimulaCompiler {
 		Vector<String> cmds = new Vector<String>();
 		cmds.add("javac");
 //		cmds.add("-source"); cmds.add("21"); // TODO: Change when ClassFile API is released
-		cmds.add("-target");
-		cmds.add("21");
+//		cmds.add("-target");
+//		cmds.add("21");
 //		cmds.add("-release"); cmds.add("21"); // TODO: Change when ClassFile API is released
 		if (Option.DEBUGGING) {
 			cmds.add("-version");

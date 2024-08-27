@@ -39,7 +39,7 @@ SimulaTest(128,"--- Test the new standard procedures  edit and edfix") begin
    facit(0):-"TEST1 true 5678234 B 3.14&-15 3.1415&&20 false";
    facit(1):-"TEST2 5 5.2 5.24 5.236";
    facit(2):-"TEST3 175 175.5 175.46 175.460";
-   facit(3):-"Portable Simula-2.0!!!Windows 10.��ystein!!!Windows 10!!!amd64!!!��ystein!!!simtst128!!!��ystein!!!simtst128";
+   facit(3):-"Portable Simula-2.0!!!Windows 11.omyhr!!!Windows 11!!!amd64!!!omyhr!!!simtst128!!!omyhr!!!simtst128";
 
    test;
    
